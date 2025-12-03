@@ -12,7 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { CreditCard, Calendar, Clock, AlertCircle, CheckCircle, XCircle} from "lucide-react"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import { getPaymentHistory, cancelPayment } from '@/lib/api/payment'
 import { handleError } from '@/lib/utils/errorHandler'

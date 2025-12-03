@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Train, MapPin, Clock, Calendar, User, ArrowRight, ChevronLeft, Download, Printer, Home, QrCode } from "lucide-react"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 
 export default function GuestTicketsPage() {

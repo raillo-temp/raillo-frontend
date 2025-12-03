@@ -14,7 +14,7 @@ import { Train, ChevronLeft, Home, ChevronRight, ChevronUp, ChevronDown, Printer
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { cn } from "@/lib/utils"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 
 export default function GuestBookingPage() {

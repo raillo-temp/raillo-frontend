@@ -7,7 +7,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Eye, EyeOff, Lock, User} from "lucide-react"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import {useRouter, useSearchParams} from "next/navigation"
 import {login} from "@/lib/api/auth"

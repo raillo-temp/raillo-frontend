@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import {tokenManager} from "@/lib/auth"
 import {useRouter} from "next/navigation"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import {getMemberInfo, MemberInfo} from "@/lib/api/user"
 import { useAuth } from "@/hooks/use-auth"

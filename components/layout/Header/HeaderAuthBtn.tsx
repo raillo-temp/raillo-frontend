@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "../ui/button";
 import { LogIn, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { tokenManager } from "@/lib/auth";
 import { logout } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const HeaderAuthBtn = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

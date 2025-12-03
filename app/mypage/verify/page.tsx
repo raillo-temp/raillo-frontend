@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { ArrowLeft } from "lucide-react"
 import { sendMemberEmailVerification, verifyMemberEmail } from "@/lib/api/user"
 import { useAuth } from "@/hooks/use-auth"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 
 export default function EmailVerificationPage() {
