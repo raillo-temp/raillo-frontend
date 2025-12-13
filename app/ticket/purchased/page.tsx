@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { Train, MapPin, ArrowRight, User } from "lucide-react"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import { getTickets } from '@/lib/api/booking'
 import { handleError } from '@/lib/utils/errorHandler'

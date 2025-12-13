@@ -38,7 +38,7 @@ import {
   MapPin,
   Clock,
 } from "lucide-react"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import { getCart, deleteReservation } from '@/lib/api/booking'
 import { processPaymentViaCard, processPaymentViaBankAccount } from '@/lib/api/payment'

@@ -12,7 +12,7 @@ import { Train, Home, Printer, Eye, EyeOff, User, Mail, Lock, Phone } from "luci
 import { signup } from "@/lib/api/signup"
 import { validateSignupForm, formatPhoneNumber, removePhoneNumberFormatting, SignupFormData, Agreements, ValidationErrors } from "@/lib/validation/signup"
 import { handleError } from '@/lib/utils/errorHandler'
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 
 export default function SignupPage() {

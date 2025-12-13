@@ -1,10 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import {useState} from "react"
-import {useRouter} from "next/navigation"
-import {Button} from "@/components/ui/button"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ArrowLeftRight,
   CalendarIcon,
@@ -14,10 +14,9 @@ import {
   MapPin,
   Clock,
 } from "lucide-react"
-import PageLayout from "@/components/layout/PageLayout"
-import {StationSelector} from "@/components/ui/station-selector"
-import {DateTimeSelector} from "@/components/ui/date-time-selector"
-import {PassengerSelector} from "@/components/ui/passenger-selector"
+import { StationSelector } from "@/components/ui/station-selector"
+import { DateTimeSelector } from "@/components/ui/date-time-selector"
+import { PassengerSelector } from "@/components/ui/passenger-selector"
 
 interface PassengerCounts {
   adult: number
@@ -33,7 +32,7 @@ export default function HomePage() {
   // 임시 로그인 상태 시뮬레이션 (실제로는 인증 상태에 따라 결정)
   const isLoggedIn = false // Simplified login status
   const router = useRouter()
-  
+
   // 예매 폼 상태
   const [departureStation, setDepartureStation] = useState("")
   const [arrivalStation, setArrivalStation] = useState("")
@@ -61,10 +60,10 @@ export default function HomePage() {
       arrival: arrivalStation,
       timestamp: Date.now()
     }
-    
+
     const existingHistory = localStorage.getItem('rail-o-search-history')
     let history = []
-    
+
     if (existingHistory) {
       try {
         history = JSON.parse(existingHistory)
@@ -74,7 +73,7 @@ export default function HomePage() {
     }
 
     // 중복 제거
-    history = history.filter((item: any) => 
+    history = history.filter((item: any) =>
       !(item.departure === departureStation && item.arrival === arrivalStation)
     )
 
@@ -94,7 +93,7 @@ export default function HomePage() {
       departureHour: departureDate.getHours().toString().padStart(2, '0'),
       passengers
     }
-    
+
     localStorage.setItem('searchData', JSON.stringify(searchData))
     router.push('/ticket/search')
   }
@@ -131,9 +130,9 @@ export default function HomePage() {
   }
 
   return (
-    <PageLayout>
+    <>
       {/* Main Content */}
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      < div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50" >
         <div className="container mx-auto px-4 py-8">
           {/* Hero Section with reduced spacing */}
           <div className="text-center mb-12">
@@ -160,45 +159,45 @@ export default function HomePage() {
                 <h2 className="text-2xl font-bold mb-2">열차 예매</h2>
                 <p className="text-blue-100">원하는 조건으로 열차를 검색하고 예매하세요</p>
               </div>
-              
+
               {/* 한 줄 예매 폼 */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
-                              {/* 출발역 */}
-              <div className="lg:col-span-2">
-                <StationSelector
-                  value={departureStation}
-                  onValueChange={handleDepartureStationChange}
-                  placeholder="출발역 선택"
-                  label="출발역"
-                  otherStation={arrivalStation}
-                  onBothStationsChange={handleBothStationsChange}
-                />
-              </div>
+                {/* 출발역 */}
+                <div className="lg:col-span-2">
+                  <StationSelector
+                    value={departureStation}
+                    onValueChange={handleDepartureStationChange}
+                    placeholder="출발역 선택"
+                    label="출발역"
+                    otherStation={arrivalStation}
+                    onBothStationsChange={handleBothStationsChange}
+                  />
+                </div>
 
-              {/* 교환 버튼 */}
-              <div className="lg:col-span-1 flex justify-center">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={swapStations}
-                  className="text-white hover:bg-white hover:bg-opacity-20 p-3 h-12 w-12 rounded-full transition-all duration-200"
-                >
-                  <ArrowLeftRight className="h-5 w-5" />
-                </Button>
-              </div>
+                {/* 교환 버튼 */}
+                <div className="lg:col-span-1 flex justify-center">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={swapStations}
+                    className="text-white hover:bg-white hover:bg-opacity-20 p-3 h-12 w-12 rounded-full transition-all duration-200"
+                  >
+                    <ArrowLeftRight className="h-5 w-5" />
+                  </Button>
+                </div>
 
-              {/* 도착역 */}
-              <div className="lg:col-span-2">
-                <StationSelector
-                  value={arrivalStation}
-                  onValueChange={handleArrivalStationChange}
-                  placeholder="도착역 선택"
-                  label="도착역"
-                  otherStation={departureStation}
-                  onBothStationsChange={handleBothStationsChange}
-                />
-              </div>
+                {/* 도착역 */}
+                <div className="lg:col-span-2">
+                  <StationSelector
+                    value={arrivalStation}
+                    onValueChange={handleArrivalStationChange}
+                    placeholder="도착역 선택"
+                    label="도착역"
+                    otherStation={departureStation}
+                    onBothStationsChange={handleBothStationsChange}
+                  />
+                </div>
 
                 {/* 출발일 */}
                 <div className="lg:col-span-2">
@@ -246,7 +245,7 @@ export default function HomePage() {
                 RAIL-O에서 제공하는 다양한 서비스를 이용해보세요
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {/* 승차권 확인 */}
               <Link href="/ticket/purchased">
@@ -334,7 +333,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </div>
-    </PageLayout>
+      </div >
+    </>
   )
 }

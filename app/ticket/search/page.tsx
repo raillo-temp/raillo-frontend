@@ -3,7 +3,7 @@
 import {useEffect, useRef, useState} from "react"
 import {useRouter} from "next/navigation"
 import {format} from "date-fns"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import {searchTrains, stationUtils, searchCars, searchSeats} from "@/lib/api/train"
 import {makeReservation, addToCart as addToCartAPI} from "@/lib/api/booking"

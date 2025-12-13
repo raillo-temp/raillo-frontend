@@ -14,7 +14,7 @@ import { CalendarIcon, Search, Train, MapPin, Users, ArrowRight, Clock, ChevronL
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { cn } from "@/lib/utils"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import { User, Phone, Lock, Home, Printer } from "lucide-react"
 

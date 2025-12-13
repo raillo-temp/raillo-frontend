@@ -16,7 +16,7 @@ import {
   User,
   Loader2
 } from "lucide-react"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import { useAuth } from '@/hooks/use-auth'
 import { getReservation, ReservationDetailResponse } from '@/lib/api/booking'

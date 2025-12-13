@@ -1,12 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import {useEffect, useState} from "react"
-import {useRouter, useSearchParams} from "next/navigation"
-import {Button} from "@/components/ui/button"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {AlertCircle, CheckCircle, CreditCard, Train, User} from "lucide-react"
-import PageLayout from "@/components/layout/PageLayout"
+import { useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { AlertCircle, CheckCircle, CreditCard, Train, User } from "lucide-react"
 
 export default function SignupCompletePage() {
   const router = useRouter()
@@ -42,7 +41,7 @@ export default function SignupCompletePage() {
   // 유효하지 않은 접근일 때
   if (!isValidAccess) {
     return (
-      <PageLayout>
+      <>
         <div className="container mx-auto px-4 py-16 text-center">
           <div className="max-w-md mx-auto">
             <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
@@ -66,15 +65,15 @@ export default function SignupCompletePage() {
             </div>
           </div>
         </div>
-      </PageLayout>
+      </>
     )
   }
 
   return (
-    <PageLayout>
+    <>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-                    {/* Page Title */}
+          {/* Page Title */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">회원가입 완료</h1>
             <p className="text-gray-600">RAIL-O 멤버십에 가입해주셔서 감사합니다</p>
@@ -171,6 +170,6 @@ export default function SignupCompletePage() {
           </Card>
         </div>
       </div>
-    </PageLayout>
+    </>
   )
 }

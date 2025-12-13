@@ -28,7 +28,7 @@ import {
   ChevronDown,
   CheckCircle,
 } from "lucide-react"
-import Header from "@/components/layout/Header"
+import Header from "@/components/layout/Header/Header"
 import Footer from "@/components/layout/Footer"
 import { deleteReservation, getReservationDetail, addToCart } from '@/lib/api/booking'
 import { handleError } from '@/lib/utils/errorHandler'
