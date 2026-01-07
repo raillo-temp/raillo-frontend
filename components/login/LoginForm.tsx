@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import LoginHeader from "./LoginHeader";
+import SignupGuide from "./SignupGuide";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -184,17 +185,7 @@ const LoginForm = () => {
           </div>
         </CardContent>
       </Card>
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
-          아직 RAIL-O 회원이 아니신가요?{" "}
-          <Link
-            href="/signup"
-            className="text-blue-600 hover:text-blue-700 font-semibold"
-          >
-            회원가입하기
-          </Link>
-        </p>
-      </div>
+      <SignupGuide />
     </div>
   );
 };
