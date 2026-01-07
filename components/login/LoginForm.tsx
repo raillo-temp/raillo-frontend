@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/lib/api/auth";
@@ -15,11 +9,11 @@ import { tokenManager } from "@/lib/auth";
 import { handleError } from "@/lib/utils/errorHandler";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import LoginHeader from "./LoginHeader";
 
 const LoginForm = () => {
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [memberNumber, setMemberNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -71,13 +65,6 @@ const LoginForm = () => {
           response.result.accessToken,
           response.result.accessTokenExpiresIn
         );
-
-        // redirectTo 쿼리 파라미터가 있으면 해당 경로로 이동, 없으면 /로 이동
-        const redirectTo = searchParams.get("redirectTo");
-        const targetPath = redirectTo ? redirectTo : "/";
-
-        // router.push 사용으로 변경 (더 빠른 클라이언트 사이드 네비게이션)
-        router.push(targetPath);
       }
     } catch (error: any) {
       handleError(error, "로그인에 실패했습니다.");
@@ -85,25 +72,10 @@ const LoginForm = () => {
       setIsLoading(false);
     }
   };
-
-  const redirectTo = searchParams.get("redirectTo");
-  const redirectMessage = redirectTo ? "로그인이 필요한 서비스입니다." : null;
   return (
-    <>
+    <div className="w-full max-w-md">
       <Card className="bg-white shadow-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">
-            로그인
-          </CardTitle>
-          <CardDescription className="text-gray-600">
-            회원번호로 로그인하세요
-          </CardDescription>
-          {redirectMessage && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">{redirectMessage}</p>
-            </div>
-          )}
-        </CardHeader>
+        <LoginHeader />
         <CardContent>
           {/* 회원번호 로그인 */}
           <div className="space-y-4">
@@ -223,7 +195,7 @@ const LoginForm = () => {
           </Link>
         </p>
       </div>
-    </>
+    </div>
   );
 };
 
