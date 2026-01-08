@@ -1,3 +1,5 @@
+"use client";
+
 import HeaderBrand from "./HeaderBrand";
 import HeaderActions from "./HeaderActions";
 import { SidebarProvider } from "../Sidebar/SidebarContext";
