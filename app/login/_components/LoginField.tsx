@@ -4,7 +4,7 @@ import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { tokenManager } from "@/lib/auth";
 import { login } from "@/lib/api/auth";
@@ -17,6 +17,7 @@ const LoginField = () => {
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const router = useRouter();
+  const memberNumberInputRef = useRef<HTMLInputElement>(null);
 
   // 페이지 로드 시 localStorage에서 회원번호 가져오기
   useEffect(() => {
@@ -26,6 +27,16 @@ const LoginField = () => {
       // 회원번호를 가져온 후 localStorage에서 삭제
       localStorage.removeItem("signupMemberNo");
     }
+  }, []);
+
+  // 컴포넌트 마운트 시 회원번호 입력란에 자동 포커스
+  useEffect(() => {
+    // 약간의 지연을 두어 DOM이 완전히 렌더링된 후 포커스
+    const timer = setTimeout(() => {
+      memberNumberInputRef.current?.focus();
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // 로그인 상태 체크 - useCallback으로 최적화
@@ -85,6 +96,7 @@ const LoginField = () => {
         <div className="relative">
           <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
+            ref={memberNumberInputRef}
             id="memberNumber"
             type="text"
             placeholder="회원번호를 입력하세요"
@@ -92,6 +104,7 @@ const LoginField = () => {
             onChange={(e) => setMemberNumber(e.target.value)}
             className="pl-10"
             disabled={isLoading}
+            autoFocus
           />
         </div>
       </div>
