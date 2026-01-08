@@ -1,10 +1,10 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
 import LoginHeader from "./LoginHeader";
 import SignupGuide from "./SignupGuide";
 import LoginField from "./LoginField";
+import LoginHelpLinks from "./LoginHelpLinks";
 
 const LoginForm = () => {
   return (
@@ -15,30 +15,7 @@ const LoginForm = () => {
           {/* 회원번호 로그인 */}
           <LoginField />
           {/* 찾기 및 회원가입 링크 */}
-          <div className="mt-6">
-            <div className="flex justify-center space-x-4 text-sm">
-              <Link
-                href="/find-account?tab=member"
-                className="text-gray-600 hover:text-blue-600"
-              >
-                회원번호 찾기
-              </Link>
-              <span className="text-gray-300">|</span>
-              <Link
-                href="/find-account?tab=password"
-                className="text-gray-600 hover:text-blue-600"
-              >
-                비밀번호 찾기
-              </Link>
-              <span className="text-gray-300">|</span>
-              <Link
-                href="/signup"
-                className="text-gray-600 hover:text-blue-600"
-              >
-                회원가입
-              </Link>
-            </div>
-          </div>
+          <LoginHelpLinks />
 
           {/* 추가 안내 */}
           <div className="text-center text-xs text-gray-500 mt-6">
