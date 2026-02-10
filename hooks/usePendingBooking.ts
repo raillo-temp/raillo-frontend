@@ -1,5 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { tokenManager } from "@/lib/auth";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 // 대기 예약 요청 타입
 export interface PendingBookingRequest {
@@ -46,25 +50,24 @@ export interface PendingBookingListResponse {
 
 export const usePostPendingBooking = () => {
   return useMutation<PendingBookingResponse, Error, PendingBookingRequest>({
-    mutationFn: async (data: PendingBookingRequest) => {
-      const response = await fetch(
-        "http://localhost:8080/api/v1/pending-bookings",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenManager.getToken()}`,
-          },
-          body: JSON.stringify(data),
+    mutationFn: async (
+      params: PendingBookingRequest
+    ): Promise<PendingBookingResponse> => {
+      try {
+        const { data } = await axios.post<PendingBookingResponse>(
+          `${API_BASE_URL}/api/v1/pending-bookings`,
+          params
+        );
+        return data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.data) {
+          const message =
+            (error.response.data as { message?: string }).message ||
+            "대기 예약 생성에 실패했습니다.";
+          throw new Error(message);
         }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "대기 예약 생성에 실패했습니다.");
+        throw error;
       }
-
-      return response.json() as Promise<PendingBookingResponse>;
     },
   });
 };
@@ -73,31 +76,21 @@ export const usePostPendingBooking = () => {
 export const useGetPendingBookingList = () => {
   return useQuery<PendingBookingListResponse, Error>({
     queryKey: ["pendingBookings"],
-    queryFn: async () => {
-      const token = tokenManager.getToken();
-      if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-      }
-
-      const response = await fetch(
-        "http://localhost:8080/api/v1/pending-bookings",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || "대기 예약 목록 조회에 실패했습니다."
+    queryFn: async (): Promise<PendingBookingListResponse> => {
+      try {
+        const { data } = await axios.get<PendingBookingListResponse>(
+          `${API_BASE_URL}/api/v1/pending-bookings`
         );
+        return data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.data) {
+          const message =
+            (error.response.data as { message?: string }).message ||
+            "대기 예약 목록 조회에 실패했습니다.";
+          throw new Error(message);
+        }
+        throw error;
       }
-
-      return response.json() as Promise<PendingBookingListResponse>;
     },
   });
 };
