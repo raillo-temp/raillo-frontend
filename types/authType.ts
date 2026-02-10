@@ -84,3 +84,16 @@ export interface VerifyEmailCodeResponse {
   message: string;
   result: VerifyEmailCodeResult;
 }
+
+// ========== 토큰 재발급 ==========
+
+export interface TokenReissueResult {
+  grantType: string;
+  accessToken: string;
+  accessTokenExpiresIn: number;
+}
+
+export interface TokenReissueResponse {
+  message: string;
+  result: TokenReissueResult;
+}
