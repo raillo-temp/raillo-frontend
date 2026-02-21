@@ -40,6 +40,7 @@ import {
   PendingBookingInfo,
 } from "@/hooks/usePendingBooking";
 import { usePostPaymentPrepare } from "@/hooks/usePayment";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ReservationPage() {
   const searchParams = useSearchParams();
@@ -62,6 +63,7 @@ export default function ReservationPage() {
   const [showPaymentWidget, setShowPaymentWidget] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState<{ orderId: string; amount: number } | null>(null);
   const { mutateAsync: preparePayment } = usePostPaymentPrepare();
+  const { toast } = useToast();
 
   // 대기 예약 목록에서 첫 번째 항목을 선택 (또는 선택된 항목이 있으면 유지)
   useEffect(() => {
@@ -134,12 +136,20 @@ export default function ReservationPage() {
   // 예약하기 버튼 클릭 핸들러 - 결제 준비 API 호출 후 결제 수단 선택 UI 표시
   const handleReservation = async () => {
     if (!paymentWidgetRef.current) {
-      alert("결제 위젯을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      toast({
+        title: "결제 위젯 준비 중",
+        description: "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (!selectedBooking) {
-      alert("예약 정보를 찾을 수 없습니다.");
+      toast({
+        title: "예약 정보 없음",
+        description: "예약 정보를 찾을 수 없습니다.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -161,7 +171,14 @@ export default function ReservationPage() {
       }
     } catch (error) {
       console.error("결제 준비 실패:", error);
-      alert("결제 준비 중 오류가 발생했습니다.");
+      toast({
+        title: "결제 준비 실패",
+        description:
+          error instanceof Error
+            ? error.message
+            : "결제 준비 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -194,7 +211,11 @@ export default function ReservationPage() {
       }
 
       console.error("결제 요청 실패:", error);
-      alert("결제 요청 중 오류가 발생했습니다.");
+      toast({
+        title: "결제 요청 실패",
+        description: "결제 요청 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -208,14 +229,26 @@ export default function ReservationPage() {
       if (selectedBooking) {
         // 대기 예약 취소 API 호출 (필요시 구현)
         // await deletePendingBooking(selectedBooking.pendingBookingId)
-        alert("대기 예약이 취소되었습니다.");
+        toast({
+          title: "대기 예약 취소",
+          description: "대기 예약이 취소되었습니다.",
+        });
         // 리스트에서 제거된 항목을 다시 불러오기 위해 refetch 필요
         router.push("/");
       } else {
-        alert("예약 정보를 찾을 수 없습니다.");
+        toast({
+          title: "예약 정보 없음",
+          description: "예약 정보를 찾을 수 없습니다.",
+          variant: "destructive",
+        });
       }
     } catch (e: any) {
-      handleError(e, "예약 취소 중 오류가 발생했습니다.");
+      const errorMessage = handleError(e, "예약 취소 중 오류가 발생했습니다.", false);
+      toast({
+        title: "예약 취소 실패",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
   };
 
@@ -229,7 +262,11 @@ export default function ReservationPage() {
       if (selectedBooking) {
         // 대기 예약은 일반 예약과 다르므로 장바구니 추가 로직이 다를 수 있음
         // 필요시 대기 예약 전용 API 호출
-        alert("대기 예약은 장바구니에 추가할 수 없습니다.");
+        toast({
+          title: "장바구니 추가 불가",
+          description: "대기 예약은 장바구니에 추가할 수 없습니다.",
+          variant: "destructive",
+        });
         // const response = await addToCart({ reservationId: selectedBooking.pendingBookingId })
         // if (response.message) {
         //   setShowCartSuccessDialog(true)
@@ -237,10 +274,23 @@ export default function ReservationPage() {
         //   alert('장바구니 추가에 실패했습니다.')
         // }
       } else {
-        alert("예약 정보를 찾을 수 없습니다.");
+        toast({
+          title: "예약 정보 없음",
+          description: "예약 정보를 찾을 수 없습니다.",
+          variant: "destructive",
+        });
       }
     } catch (e: any) {
-      handleError(e, "장바구니 추가 중 오류가 발생했습니다.");
+      const errorMessage = handleError(
+        e,
+        "장바구니 추가 중 오류가 발생했습니다.",
+        false
+      );
+      toast({
+        title: "장바구니 추가 실패",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
   };
 

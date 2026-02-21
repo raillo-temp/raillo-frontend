@@ -41,6 +41,7 @@ import {
 import { getCart, deletePendingBookings } from '@/lib/api/booking'
 import { processPaymentViaCard, processPaymentViaBankAccount } from '@/lib/api/payment'
 import { handleError } from '@/lib/utils/errorHandler'
+import { useToast } from "@/hooks/use-toast"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 
@@ -70,6 +71,7 @@ interface CartItem {
 
 export default function CartPage() {
   const router = useRouter()
+  const { toast } = useToast()
   const { isAuthenticated, isLoading: authLoading } = useAuth({ requireAuth: true })
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -98,6 +100,14 @@ export default function CartPage() {
   const [accountHolderName, setAccountHolderName] = useState("")
   const [identificationNumber, setIdentificationNumber] = useState("")
   const [accountPassword, setAccountPassword] = useState("")
+
+  const showValidationToast = (description: string) => {
+    toast({
+      title: "입력 확인",
+      description,
+      variant: "destructive",
+    })
+  }
 
   // 장바구니 데이터 로드
   useEffect(() => {
@@ -198,7 +208,7 @@ export default function CartPage() {
   const handleDeleteSelected = () => {
     const hasSelected = cartItems.some((item) => item.selected)
     if (!hasSelected) {
-      alert("삭제할 항목을 선택해주세요.")
+      showValidationToast("삭제할 항목을 선택해주세요.")
       return
     }
     setShowDeleteAllDialog(true)
@@ -219,7 +229,7 @@ export default function CartPage() {
   const handlePayment = () => {
     const selectedItems = cartItems.filter((item) => item.selected)
     if (selectedItems.length === 0) {
-      alert("결제할 항목을 선택해주세요.")
+      showValidationToast("결제할 항목을 선택해주세요.")
       return
     }
     setShowPaymentDialog(true)
@@ -227,19 +237,19 @@ export default function CartPage() {
 
   const validateCardPayment = () => {
     if (!cardNumber) {
-      alert("카드번호를 입력해주세요.")
+      showValidationToast("카드번호를 입력해주세요.")
       return false
     }
     if (!validThru) {
-      alert("유효기간을 입력해주세요.")
+      showValidationToast("유효기간을 입력해주세요.")
       return false
     }
     if (!rrn) {
-      alert("주민등록번호를 입력해주세요.")
+      showValidationToast("주민등록번호를 입력해주세요.")
       return false
     }
     if (!cardPassword) {
-      alert("카드 비밀번호를 입력해주세요.")
+      showValidationToast("카드 비밀번호를 입력해주세요.")
       return false
     }
     return true
@@ -247,23 +257,23 @@ export default function CartPage() {
 
   const validateAccountPayment = () => {
     if (!bankCode) {
-      alert("은행을 선택해주세요.")
+      showValidationToast("은행을 선택해주세요.")
       return false
     }
     if (!accountNumber) {
-      alert("계좌번호를 입력해주세요.")
+      showValidationToast("계좌번호를 입력해주세요.")
       return false
     }
     if (!accountHolderName) {
-      alert("예금주명을 입력해주세요.")
+      showValidationToast("예금주명을 입력해주세요.")
       return false
     }
     if (!identificationNumber) {
-      alert("주민등록번호 앞 6자리를 입력해주세요.")
+      showValidationToast("주민등록번호 앞 6자리를 입력해주세요.")
       return false
     }
     if (!accountPassword) {
-      alert("계좌 비밀번호를 입력해주세요.")
+      showValidationToast("계좌 비밀번호를 입력해주세요.")
       return false
     }
     return true
@@ -272,7 +282,7 @@ export default function CartPage() {
   const processCartPayment = async () => {
     const selectedItems = cartItems.filter((item) => item.selected)
     if (selectedItems.length === 0) {
-      alert("결제할 항목을 선택해주세요.")
+      showValidationToast("결제할 항목을 선택해주세요.")
       return
     }
 
@@ -286,7 +296,7 @@ export default function CartPage() {
       )
 
       if (payableItems.length !== selectedItems.length) {
-        alert("선택한 항목 중 결제 정보가 없는 항목이 있어 결제를 진행할 수 없습니다.")
+        showValidationToast("선택한 항목 중 결제 정보가 없어 결제를 진행할 수 없습니다.")
         return
       }
 
@@ -327,7 +337,10 @@ export default function CartPage() {
       const successCount = results.filter(r => r !== null).length
 
       if (successCount > 0) {
-        alert(`${successCount}개 항목의 결제가 완료되었습니다!`)
+        toast({
+          title: "결제 완료",
+          description: `${successCount}개 항목의 결제가 완료되었습니다.`,
+        })
         setShowPaymentDialog(false)
         
         // 결제 완료된 항목들을 장바구니에서 제거
@@ -338,7 +351,16 @@ export default function CartPage() {
       }
     } catch (error) {
       console.error('Cart payment error:', error)
-      handleError(error, '결제 처리 중 오류가 발생했습니다.', true)
+      const errorMessage = handleError(
+        error,
+        '결제 처리 중 오류가 발생했습니다.',
+        false
+      )
+      toast({
+        title: "결제 실패",
+        description: errorMessage,
+        variant: "destructive",
+      })
     } finally {
       setPaymentLoading(false)
     }

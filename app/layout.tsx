@@ -3,6 +3,7 @@ import './globals.css'
 import Header from '@/components/layout/Header/Header'
 import Footer from '@/components/layout/Footer'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'Raillo',
@@ -24,6 +25,7 @@ export default function RootLayout({
             <main className='flex-1'>{children}</main>
             <Footer />
           </div>
+          <Toaster />
         </QueryProvider>
       </body>
     </html >
