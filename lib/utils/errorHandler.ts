@@ -6,7 +6,12 @@ export interface ErrorResponse {
   timestamp?: string
   errorCode?: string
   errorMessage?: string
-  details?: any
+  details?: unknown
+  message?: string
+}
+
+const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === "object" && value !== null
 }
 
 /**
@@ -15,30 +20,28 @@ export interface ErrorResponse {
  * @param defaultMessage - 기본 에러 메시지
  * @returns 사용자에게 표시할 에러 메시지
  */
-export const extractErrorMessage = (error: any, defaultMessage: string = '오류가 발생했습니다.'): string => {
-  console.error('Error details:', error)
-  
-  // 1. 직접 에러 객체에 errorMessage가 있는 경우 (제공된 형식)
-  if (error?.errorMessage) {
-    return error.errorMessage
-  }
-  
-  // 2. response.data에 errorMessage가 있는 경우
-  if (error?.response?.data?.errorMessage) {
-    return error.response.data.errorMessage
-  }
-  
-  // 3. response.data에 message가 있는 경우
-  if (error?.response?.data?.message) {
-    return error.response.data.message
-  }
-  
-  // 4. 일반적인 에러 메시지
-  if (error?.message) {
+export const extractErrorMessage = (error: unknown, defaultMessage: string = '오류가 발생했습니다.'): string => {
+  if (error instanceof Error && error.message) {
     return error.message
   }
-  
-  // 5. 기본 메시지
+
+  if (isObject(error) && typeof error.errorMessage === "string") {
+    return error.errorMessage
+  }
+
+  if (isObject(error) && typeof error.message === "string") {
+    return error.message
+  }
+
+  if (isObject(error) && isObject(error.response) && isObject(error.response.data)) {
+    if (typeof error.response.data.errorMessage === "string") {
+      return error.response.data.errorMessage
+    }
+    if (typeof error.response.data.message === "string") {
+      return error.response.data.message
+    }
+  }
+
   return defaultMessage
 }
 
@@ -50,7 +53,7 @@ export const extractErrorMessage = (error: any, defaultMessage: string = '오류
  * @returns 추출된 에러 메시지
  */
 export const handleError = (
-  error: any, 
+  error: unknown, 
   defaultMessage: string = '오류가 발생했습니다.',
   showAlert: boolean = true
 ): string => {

@@ -40,6 +40,8 @@ export class ApiError extends Error {
     }
 }
 
+export const UNAUTHORIZED_ERROR_CODE = "UNAUTHORIZED";
+
 const hasValidAccessToken = (): boolean => {
     const { accessToken, tokenExpiresIn } = useAuthStore.getState();
     return Boolean(accessToken) && Boolean(tokenExpiresIn) && Date.now() < (tokenExpiresIn ?? 0);
@@ -98,37 +100,20 @@ async function apiRequest<T>(
                 if (refreshSuccess) {
                     // 토큰 갱신 성공 시 재시도 (최대 1회)
                     return apiRequest<T>(endpoint, options, retryCount + 1);
-                } else {
-                    // 토큰 갱신 실패 시 사용자에게 알림 및 로그인 페이지로 리다이렉트
-                    useAuthStore.getState().removeTokens();
-                    if (typeof window !== "undefined") {
-                        const shouldLogin = window.confirm(
-                            '로그인 세션이 만료되었습니다.\n\n' +
-                            '로그인 페이지로 이동하시겠습니까?'
-                        );
-                        if (shouldLogin) {
-                            window.location.href = '/login';
-                        }
-                    }
-                    // 에러 처리로 넘어감
                 }
+
+                useAuthStore.getState().removeTokens();
+                throw new ApiError(
+                    "로그인 세션이 만료되었습니다. 다시 로그인해주세요.",
+                    UNAUTHORIZED_ERROR_CODE,
+                    new Date().toISOString(),
+                    null,
+                    401
+                );
             }
 
             // 서버 에러 응답 형식에 맞게 처리
             const errorData = data as ApiErrorResponse;
-            
-            // 통합 에러 로그
-            console.error('❌ API Error:', {
-                url,
-                method: config.method || 'GET',
-                status: response.status,
-                statusText: response.statusText,
-                errorCode: errorData.errorCode,
-                errorMessage: errorData.errorMessage,
-                duration: `${duration}ms`,
-                timestamp: endTime.toISOString(),
-                retryCount
-            });
             
             if (errorData.errorMessage) {
                 throw new ApiError(
@@ -157,31 +142,19 @@ async function apiRequest<T>(
             }
         }
 
-        // 통합 성공 로그
-        console.log('✅ API Success:', {
-            url,
-            method: config.method || 'GET',
-            status: response.status,
-            statusText: response.statusText,
-            data,
-            duration: `${duration}ms`,
-            timestamp: endTime.toISOString(),
-            retryCount
-        });
-
         return data as ApiResponse<T>;
-    } catch (error: any) {
+    } catch (error: unknown) {
         const endTime = new Date();
         const duration = endTime.getTime() - startTime.getTime();
         const isNetworkError =
-            error?.name === 'TypeError' ||
-            error?.message === 'Failed to fetch';
+            error instanceof TypeError ||
+            (error instanceof Error && error.message === 'Failed to fetch');
         
         // 네트워크 에러 등 기타 에러 로그
         const logPayload = {
             url,
             method: config.method || 'GET',
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
             duration: `${duration}ms`,
             timestamp: endTime.toISOString(),
             retryCount
@@ -198,7 +171,9 @@ async function apiRequest<T>(
             );
         }
 
-        console.error('💥 API Network Error:', logPayload);
+        if (process.env.NODE_ENV === "development") {
+            console.error('💥 API Error:', logPayload);
+        }
         throw error;
     }
 }
