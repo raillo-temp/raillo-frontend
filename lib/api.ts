@@ -1,7 +1,8 @@
 import { useAuthStore } from "@/stores/auth-store";
 
 // API 기본 설정
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const DIRECT_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = DIRECT_API_BASE_URL || (typeof window !== "undefined" ? "/__api" : undefined);
 
 // 환경 변수 체크
 if (!API_BASE_URL) {
@@ -172,16 +173,32 @@ async function apiRequest<T>(
     } catch (error: any) {
         const endTime = new Date();
         const duration = endTime.getTime() - startTime.getTime();
+        const isNetworkError =
+            error?.name === 'TypeError' ||
+            error?.message === 'Failed to fetch';
         
         // 네트워크 에러 등 기타 에러 로그
-        console.error('💥 API Network Error:', {
+        const logPayload = {
             url,
             method: config.method || 'GET',
             error: error.message,
             duration: `${duration}ms`,
             timestamp: endTime.toISOString(),
             retryCount
-        });
+        };
+
+        if (isNetworkError) {
+            console.warn('🌐 API Network Unreachable:', logPayload);
+            throw new ApiError(
+                '서버에 연결할 수 없습니다. 백엔드 서버 상태와 CORS 설정을 확인해주세요.',
+                'NETWORK_ERROR',
+                new Date().toISOString(),
+                null,
+                0
+            );
+        }
+
+        console.error('💥 API Network Error:', logPayload);
         throw error;
     }
 }
@@ -190,7 +207,8 @@ async function apiRequest<T>(
 export const api = {
     // GET 요청
     get: <T>(endpoint: string, params?: Record<string, any>): Promise<ApiResponse<T>> => {
-        const url = new URL(`${API_BASE_URL}${endpoint}`);
+        const baseUrl = typeof window !== "undefined" ? window.location.origin : API_BASE_URL;
+        const url = new URL(`${API_BASE_URL}${endpoint}`, baseUrl);
         if (params) {
             Object.entries(params).forEach(([key, value]) => {
                 if (value !== undefined && value !== null) {

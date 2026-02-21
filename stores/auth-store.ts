@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { TokenReissueResponse } from "@/types/authType";
 import axios from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/__api";
 let refreshPromise: Promise<boolean> | null = null;
 
 interface AuthState {
@@ -60,29 +60,46 @@ export const useAuthStore = create<AuthState>()(
         }
 
         refreshPromise = (async () => {
+          const reissueEndpoints = ["/auth/reissue", "/api/v1/auth/reissue"];
+
           try {
-            const { data } = await axios.post<TokenReissueResponse>(
-              `${API_BASE_URL}/auth/reissue`,
-              {},
-              { withCredentials: true }
-            );
+            for (const endpoint of reissueEndpoints) {
+              const response = await axios.post<TokenReissueResponse>(
+                `${API_BASE_URL}${endpoint}`,
+                undefined,
+                {
+                  withCredentials: true,
+                  validateStatus: (status) => status >= 200 && status < 500,
+                }
+              );
 
-            if (!data.result) {
-              get().removeTokens();
-              return false;
+              if (
+                response.status >= 200 &&
+                response.status < 300 &&
+                response.data?.result
+              ) {
+                const { accessToken, accessTokenExpiresIn } = response.data.result;
+                const expiresIn = Date.now() + accessTokenExpiresIn * 1000;
+                get().setTokens(accessToken, expiresIn);
+                return true;
+              }
+
+              if (response.status === 401 || response.status === 404) {
+                continue;
+              }
             }
-
-            const { accessToken, accessTokenExpiresIn } = data.result;
-            const expiresIn = Date.now() + accessTokenExpiresIn * 1000;
-            get().setTokens(accessToken, expiresIn);
-            return true;
           } catch (error) {
-            console.error("토큰 갱신 실패:", error);
-            get().removeTokens();
-            return false;
+            if (axios.isAxiosError(error) && !error.response) {
+              console.warn("토큰 갱신 서버 연결 실패:", error.message);
+            } else {
+              console.error("토큰 갱신 요청 실패:", error);
+            }
           } finally {
             refreshPromise = null;
           }
+
+          get().removeTokens();
+          return false;
         })();
 
         return refreshPromise;

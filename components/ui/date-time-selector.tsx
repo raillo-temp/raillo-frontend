@@ -111,7 +111,7 @@ export function DateTimeSelector({
           }
           return [];
         } catch (error) {
-          console.error("운행 캘린더 로드 실패:", error);
+          console.warn("운행 캘린더 로드 실패:", error);
           return [];
         } finally {
           globalCalendarCache.loading = false;
