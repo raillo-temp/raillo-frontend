@@ -6,7 +6,7 @@ export interface SignupRequest {
   password: string;
   email: string;
   birthDate: string;
-  gender: string;
+  gender: "M" | "F";
 }
 
 export interface SignupResult {

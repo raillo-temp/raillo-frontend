@@ -1,19 +1,7 @@
 import { api } from '../api';
-
-// 회원가입 요청 타입
-export interface SignupRequest {
-  name: string;
-  phoneNumber: string;
-  password: string;
-  email: string;
-  birthDate: string;
-  gender: 'M' | 'F';
-}
-
-// 회원가입 응답 타입
-export interface SignupResponse {
-  memberNo: string;
-}
+import { SignupRequest as SignupPayload, SignupResponse as SignupApiResponse } from '@/types/authType';
+export type SignupRequest = SignupPayload;
+export type SignupResponse = SignupApiResponse["result"];
 
 // 회원가입 API 함수
 export const signup = async (signupData: SignupRequest): Promise<SignupResponse> => {

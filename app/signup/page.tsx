@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Train, Home, Printer, Eye, EyeOff, User, Mail, Lock, Phone } from "lucide-react"
-import { signup } from "@/lib/api/signup"
+import { signup, SignupRequest } from "@/lib/api/signup"
 import { validateSignupForm, formatPhoneNumber, removePhoneNumberFormatting, SignupFormData, Agreements, ValidationErrors } from "@/lib/validation/signup"
 import { handleError } from '@/lib/utils/errorHandler'
 
@@ -155,14 +155,18 @@ export default function SignupPage() {
     try {
       // 휴대폰 번호에서 하이픈 제거
       const phoneNumbersOnly = removePhoneNumberFormatting(formData.phoneNumber)
-      
-      const signupData: any = {
+
+      if (formData.gender !== "M" && formData.gender !== "F") {
+        throw new Error("성별 정보가 올바르지 않습니다.")
+      }
+
+      const signupData: SignupRequest = {
         name: formData.name,
         phoneNumber: phoneNumbersOnly,
         password: formData.password,
         email: formData.email,
         birthDate: formData.birthDate,
-        gender: formData.gender as 'M' | 'F',
+        gender: formData.gender,
       }
 
       const response = await signup(signupData)
@@ -175,7 +179,7 @@ export default function SignupPage() {
       
       // 완료 페이지로 이동
       router.push("/signup/complete")
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleError(error, "회원가입에 실패했습니다.")
     } finally {
       setIsLoading(false)
