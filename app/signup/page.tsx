@@ -391,9 +391,9 @@ export default function SignupPage() {
                   </Button>
                   <Button
                     type="button"
-                    variant={formData.gender === "W" ? "default" : "outline"}
+                    variant={formData.gender === "F" ? "default" : "outline"}
                     onClick={() => {
-                      handleInputChange("gender", "W")
+                      handleInputChange("gender", "F")
                       // 성별 에러 초기화
                       if (errors.gender) {
                         setErrors((prev) => ({
@@ -402,7 +402,7 @@ export default function SignupPage() {
                         }))
                       }
                     }}
-                    className={`flex-1 ${formData.gender === "W" ? "bg-blue-600 text-white" : "border-gray-300"}`}
+                    className={`flex-1 ${formData.gender === "F" ? "bg-blue-600 text-white" : "border-gray-300"}`}
                   >
                     여성
                   </Button>

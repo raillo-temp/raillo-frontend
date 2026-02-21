@@ -77,10 +77,10 @@ export const validateSignupForm = (
     errors.birthDate = "생년월일은 YYYY-MM-DD 형식으로 입력해야 합니다."
   }
 
-  // 성별 검사 (M 또는 W)
+  // 성별 검사 (M 또는 F)
   if (!formData.gender) {
     errors.gender = "성별은 필수입니다."
-  } else if (!/^[MW]$/.test(formData.gender)) {
+  } else if (!/^[MF]$/.test(formData.gender)) {
     errors.gender = "성별을 선택해주세요."
   }
 

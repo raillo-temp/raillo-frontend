@@ -68,6 +68,21 @@ interface BookingData {
   }
 }
 
+interface RoundtripCompleteData {
+  departureStation: string
+  arrivalStation: string
+  departureDate: string
+  returnDate: string
+  passengers: PassengerCounts
+  selectedOutbound: string
+  selectedInbound: string
+  outboundTrains: Array<TrainInfo & { type: string }>
+  inboundTrains: Array<TrainInfo & { type: string }>
+  bookingId: string
+  totalPrice: number
+  bookingTime: string
+}
+
 export default function RoundtripBookingPage() {
   const router = useRouter()
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
@@ -106,26 +121,33 @@ export default function RoundtripBookingPage() {
 
     setLoading(true)
     try {
-      // 실제 API 호출 대신 시뮬레이션
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // 예매 성공 시 완료 페이지로 이동
-      setBookingComplete(true)
-      
-      // 예매 완료 데이터 저장
-      const completeData = {
-        ...bookingData,
+      const completeData: RoundtripCompleteData = {
+        departureStation: bookingData.searchData.departureStation,
+        arrivalStation: bookingData.searchData.arrivalStation,
+        departureDate: bookingData.searchData.departureDate,
+        returnDate: bookingData.searchData.returnDate,
+        passengers: bookingData.searchData.passengers,
+        selectedOutbound: bookingData.outboundTrain.id,
+        selectedInbound: bookingData.inboundTrain.id,
+        outboundTrains: [
+          {
+            ...bookingData.outboundTrain,
+            type: bookingData.outboundTrain.trainType,
+          },
+        ],
+        inboundTrains: [
+          {
+            ...bookingData.inboundTrain,
+            type: bookingData.inboundTrain.trainType,
+          },
+        ],
         bookingId: `RT-${Date.now()}`,
         totalPrice: getTotalPrice(),
-        bookingTime: new Date().toISOString()
+        bookingTime: new Date().toISOString(),
       }
       localStorage.setItem('roundtripCompleteData', JSON.stringify(completeData))
-      
-      // 3초 후 완료 페이지로 이동
-      setTimeout(() => {
-        router.push('/ticket/payment-complete')
-      }, 3000)
-      
+      setBookingComplete(true)
+      router.push('/ticket/complete')
     } catch (error) {
       console.error('예매 실패:', error)
       alert('예매 중 오류가 발생했습니다. 다시 시도해주세요.')

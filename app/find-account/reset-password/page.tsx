@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Train, Home, Printer, Eye, EyeOff } from "lucide-react"
+import { authAPI } from "@/lib/api/auth"
+import { handleError } from "@/lib/utils/errorHandler"
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -19,6 +21,7 @@ export default function ResetPasswordPage() {
     new: "",
     confirm: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const togglePasswordVisibility = (field: "new" | "confirm") => {
     setShowPasswords((prev) => ({
@@ -34,7 +37,7 @@ export default function ResetPasswordPage() {
     }))
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!passwords.new || !passwords.confirm) {
       alert("모든 필드를 입력해주세요.")
       return
@@ -45,9 +48,41 @@ export default function ResetPasswordPage() {
       return
     }
 
-    // 비밀번호 변경 로직
-    alert("비밀번호가 성공적으로 변경되었습니다.")
-    router.push("/login")
+    if (passwords.new.length < 8) {
+      alert("비밀번호는 8자 이상이어야 합니다.")
+      return
+    }
+
+    if (isSubmitting) {
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const temporaryToken = sessionStorage.getItem("tempPasswordToken")
+      if (!temporaryToken) {
+        alert("임시 토큰이 만료되었습니다. 다시 인증해주세요.")
+        router.push("/find-account")
+        return
+      }
+
+      await authAPI.changePassword(
+        {
+          newPassword: passwords.new,
+        },
+        temporaryToken,
+      )
+
+      sessionStorage.removeItem("tempPasswordToken")
+      sessionStorage.removeItem("tempPasswordEmail")
+      alert("비밀번호가 성공적으로 변경되었습니다.")
+      router.push("/login")
+    } catch (error: unknown) {
+      handleError(error, "비밀번호 변경에 실패했습니다.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -198,10 +233,11 @@ export default function ResetPasswordPage() {
                 <div className="pt-6">
                   <Button
                     onClick={handleSubmit}
+                    disabled={isSubmitting}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-lg rounded-full"
                     size="lg"
                   >
-                    비밀번호 변경완료
+                    {isSubmitting ? "변경 중..." : "비밀번호 변경완료"}
                   </Button>
                 </div>
               </div>
