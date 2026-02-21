@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -36,6 +36,7 @@ export default function FindAccountPage() {
   const [temporaryToken, setTemporaryToken] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const loginRedirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const router = useRouter()
 
@@ -61,6 +62,14 @@ export default function FindAccountPage() {
       setPasswordUserEmail(tempEmail)
       setShowPasswordChange(true)
       setActiveTab('password') // 비밀번호 변경 화면이면 비밀번호 탭으로
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (loginRedirectTimeoutRef.current) {
+        clearTimeout(loginRedirectTimeoutRef.current)
+      }
     }
   }, [])
 
@@ -277,9 +286,6 @@ export default function FindAccountPage() {
         newPassword: newPassword
       }, token)
 
-      // 응답 구조 확인을 위한 로그
-      console.log('Password change response:', response)
-      
       // API 호출이 성공했다면 (catch 블록에 들어가지 않았다면) 성공으로 간주
       // 성공 상태로 변경
       setShowPasswordSuccess(true)
@@ -289,7 +295,7 @@ export default function FindAccountPage() {
       sessionStorage.removeItem('tempPasswordEmail')
       
       // 3초 후 로그인 페이지로 자동 이동
-      setTimeout(() => {
+      loginRedirectTimeoutRef.current = setTimeout(() => {
         router.push('/login')
       }, 3000)
     } catch (error: any) {

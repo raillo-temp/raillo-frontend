@@ -20,10 +20,7 @@ export default function FindAccountResultPage() {
     if (memberNoFromStorage) {
       setMemberNo(memberNoFromStorage)
       setIsLoading(false)
-      // 상태가 업데이트된 후 sessionStorage에서 삭제
-      setTimeout(() => {
-        sessionStorage.removeItem('foundMemberNo')
-      }, 100)
+      sessionStorage.removeItem('foundMemberNo')
     } else {
       // sessionStorage에 회원번호가 없으면 이전 페이지로 리다이렉트
       router.push('/find-account')

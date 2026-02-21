@@ -1,6 +1,6 @@
 "use client"
 
-import {useState, useEffect} from "react"
+import {useState, useEffect, useRef} from "react"
 import {useRouter} from "next/navigation"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
@@ -27,6 +27,15 @@ export default function WithdrawPage() {
     const [error, setError] = useState("")
     const [success, setSuccess] = useState(false)
     const router = useRouter()
+    const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    useEffect(() => {
+        return () => {
+            if (redirectTimeoutRef.current) {
+                clearTimeout(redirectTimeoutRef.current)
+            }
+        }
+    }, [])
 
     const handleAgreementChange = (key: keyof typeof agreements) => {
         setAgreements(prev => ({
@@ -54,12 +63,12 @@ export default function WithdrawPage() {
             removeTokens()
 
             // 3초 후 홈으로 이동
-            setTimeout(() => {
+            redirectTimeoutRef.current = setTimeout(() => {
                 router.push('/')
             }, 3000)
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('회원탈퇴 실패:', error)
-            setError(error.message || "회원탈퇴 처리 중 오류가 발생했습니다.")
+            setError(error instanceof Error ? error.message : "회원탈퇴 처리 중 오류가 발생했습니다.")
         } finally {
             setIsLoading(false)
         }

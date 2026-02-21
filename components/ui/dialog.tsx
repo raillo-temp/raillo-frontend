@@ -35,7 +35,7 @@ const DialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
-    <DialogDescription>Fixed the warning</DialogDescription>
+    <DialogDescription className="sr-only">다이얼로그 콘텐츠</DialogDescription>
     <DialogPrimitive.Content
       ref={ref}
       className={cn(

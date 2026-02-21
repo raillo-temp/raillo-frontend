@@ -233,6 +233,7 @@ export function DateTimeSelector({
             }
           }}
           disabled={!isSelectable || !isCurrentMonth}
+          aria-label={`${format(currentDate, "yyyy년 MM월 dd일")} 날짜 선택`}
           className={`
             p-2 text-sm transition-colors relative h-9
             ${
@@ -353,6 +354,7 @@ export function DateTimeSelector({
                 size="sm"
                 onClick={handleClose}
                 className="h-10 w-10 p-0 hover:bg-gray-100"
+                aria-label="날짜 선택 닫기"
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -376,6 +378,7 @@ export function DateTimeSelector({
               <div className="flex justify-between items-center mb-4">
                 <button
                   className="p-2 hover:bg-gray-100 rounded disabled:opacity-50"
+                  aria-label="이전 달로 이동"
                   onClick={() => {
                     const prevMonth = new Date(
                       tempDate.getFullYear(),
@@ -417,6 +420,7 @@ export function DateTimeSelector({
                 </div>
                 <button
                   className="p-2 hover:bg-gray-100 rounded disabled:opacity-50"
+                  aria-label="다음 달로 이동"
                   onClick={() => {
                     const nextMonth = new Date(
                       tempDate.getFullYear(),

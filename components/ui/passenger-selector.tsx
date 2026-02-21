@@ -98,6 +98,7 @@ export function PassengerSelector({ value, onValueChange, placeholder, label, si
           variant="outline"
           className="w-full justify-start text-left font-normal bg-white text-gray-900 hover:bg-gray-50"
           onClick={handleOpen}
+          aria-label={`${label} 선택 열기`}
         >
           <Users className="mr-2 h-4 w-4" />
           {getTotalPassengers() > 0 ? `총 ${getTotalPassengers()}명` : placeholder}
@@ -115,6 +116,7 @@ export function PassengerSelector({ value, onValueChange, placeholder, label, si
                   size="sm"
                   onClick={handleClose}
                   className="h-8 w-8 p-0"
+                  aria-label={`${label} 선택 닫기`}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -140,6 +142,7 @@ export function PassengerSelector({ value, onValueChange, placeholder, label, si
                       onClick={() => updateTempPassengerCount(passengerType.key as keyof PassengerCounts, "minus")}
                       disabled={tempPassengerCounts[passengerType.key as keyof PassengerCounts] <= passengerType.min}
                       className="h-8 w-8 p-0"
+                      aria-label={`${passengerType.label} 인원 감소`}
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
@@ -152,6 +155,7 @@ export function PassengerSelector({ value, onValueChange, placeholder, label, si
                       onClick={() => updateTempPassengerCount(passengerType.key as keyof PassengerCounts, "plus")}
                       disabled={tempPassengerCounts[passengerType.key as keyof PassengerCounts] >= passengerType.max}
                       className="h-8 w-8 p-0"
+                      aria-label={`${passengerType.label} 인원 증가`}
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
