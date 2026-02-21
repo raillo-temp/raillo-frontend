@@ -4,16 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function ContactVerifyLoading() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Skeleton */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-8 w-32" />
-            <Skeleton className="h-8 w-24" />
-          </div>
-        </div>
-      </div>
-
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar Skeleton */}

@@ -9,8 +9,6 @@ import { Label } from "@/components/ui/label"
 import { ArrowLeft } from "lucide-react"
 import { sendMemberEmailVerification, verifyMemberEmail } from "@/lib/api/user"
 import { useAuth } from "@/hooks/use-auth"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 
 export default function EmailVerificationPage() {
   const router = useRouter()
@@ -46,12 +44,10 @@ export default function EmailVerificationPage() {
   if (isChecking || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Header />
         <div className="flex-1 container mx-auto px-4 py-16 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">페이지를 불러오는 중...</p>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -161,7 +157,6 @@ export default function EmailVerificationPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
 
       <div className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-md mx-auto">
@@ -245,8 +240,6 @@ export default function EmailVerificationPage() {
           </Card>
         </div>
       </div>
-
-      <Footer />
     </div>
   )
 } 

@@ -10,8 +10,6 @@ import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
 import { updatePassword } from "@/lib/api/user"
 import MyPageSidebar from "@/components/layout/MyPageSidebar"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 import { getMemberInfo, MemberInfo } from "@/lib/api/user"
 import { useAuth } from "@/hooks/use-auth"
 
@@ -67,12 +65,10 @@ export default function PasswordChangePage() {
   if (isChecking || loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-16 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">페이지를 불러오는 중...</p>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -143,8 +139,6 @@ export default function PasswordChangePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <Header />
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -250,9 +244,6 @@ export default function PasswordChangePage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   )
 }

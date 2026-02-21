@@ -12,8 +12,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { CreditCard, Calendar, Clock, AlertCircle, CheckCircle, XCircle} from "lucide-react"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 import { getPaymentHistory, cancelPayment } from '@/lib/api/payment'
 import { handleError } from '@/lib/utils/errorHandler'
 
@@ -161,12 +159,10 @@ export default function PaymentHistoryPage() {
   if (isChecking || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-        <Header />
         <div className="flex-1 container mx-auto px-4 py-16 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">인증을 확인하고 있습니다...</p>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -175,19 +171,16 @@ export default function PaymentHistoryPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-        <Header />
         <div className="flex-1 container mx-auto px-4 py-16 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">결제 내역을 불러오고 있습니다...</p>
         </div>
-        <Footer />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-      <Header />
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 py-8">
@@ -362,8 +355,6 @@ export default function PaymentHistoryPage() {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }

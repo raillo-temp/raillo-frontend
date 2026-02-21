@@ -4,24 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function PasswordChangeLoading() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Skeleton */}
-      <div className="bg-blue-600 text-white py-4">
-        <div className="container mx-auto px-4">
-          <Skeleton className="h-8 w-32 mx-auto bg-blue-500" />
-        </div>
-      </div>
-
-      {/* Breadcrumb Skeleton */}
-      <div className="bg-white border-b py-3">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center space-x-2">
-            <Skeleton className="h-4 w-8" />
-            <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-4 w-24" />
-          </div>
-        </div>
-      </div>
-
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar Skeleton */}

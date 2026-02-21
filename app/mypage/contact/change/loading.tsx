@@ -4,23 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function ContactChangeLoading() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Skeleton */}
-      <div className="bg-blue-500 py-6">
-        <div className="container mx-auto px-4">
-          <Skeleton className="h-8 w-48 mx-auto bg-blue-400" />
-        </div>
-      </div>
-
-      {/* Breadcrumb Skeleton */}
-      <div className="bg-white border-b py-3">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-4 w-64" />
-            <Skeleton className="h-8 w-8" />
-          </div>
-        </div>
-      </div>
-
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar Skeleton */}

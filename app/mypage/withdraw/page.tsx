@@ -10,8 +10,6 @@ import {Alert, AlertDescription} from "@/components/ui/alert"
 import {Checkbox} from "@/components/ui/checkbox"
 import {AlertTriangle, ChevronLeft, UserX} from "lucide-react"
 import {deleteAccount} from "@/lib/api/user"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
 import { useAuthStore } from "@/stores/auth-store"
@@ -71,12 +69,10 @@ export default function WithdrawPage() {
     if (isChecking) {
         return (
             <div className="min-h-screen bg-gray-50">
-                <Header />
                 <div className="container mx-auto px-4 py-16 text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                     <p className="text-gray-600">페이지를 불러오는 중...</p>
                 </div>
-                <Footer />
             </div>
         )
     }
@@ -89,7 +85,6 @@ export default function WithdrawPage() {
     if (success) {
         return (
             <div className="min-h-screen bg-gray-50">
-                <Header />
                 <div className="container mx-auto px-4 py-16">
                     <div className="max-w-md mx-auto">
                         <Card className="text-center">
@@ -113,14 +108,12 @@ export default function WithdrawPage() {
                         </Card>
                     </div>
                 </div>
-                <Footer />
             </div>
         )
     }
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Header />
 
             <div className="container mx-auto px-4 py-8">
                 <div className="max-w-2xl mx-auto">
@@ -251,8 +244,6 @@ export default function WithdrawPage() {
                     </Card>
                 </div>
             </div>
-
-            <Footer />
         </div>
     )
 }
