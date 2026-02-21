@@ -92,7 +92,10 @@ export default function PaymentPage() {
       try {
         setLoading(true)
         const response = await getReservation(parseInt(reservationId))
-        setReservationData(response.result!)
+        if (!response.result) {
+          throw new Error("예약 상세 응답 데이터가 없습니다.")
+        }
+        setReservationData(response.result)
       } catch (err) {
         const errorMessage = handleError(err, '예약 정보 조회 중 오류가 발생했습니다.', false)
         setError(errorMessage)

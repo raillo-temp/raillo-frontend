@@ -101,7 +101,16 @@ export default function ReservationPage() {
       try {
         // TODO: 실제 클라이언트 키로 변경 필요
         const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY || "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
-        const customerKey = `customer-${Date.now()}`;
+        const storedCustomerKey = localStorage.getItem("tossCustomerKey");
+        const customerKey =
+          storedCustomerKey ??
+          (typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? `customer-${crypto.randomUUID()}`
+            : `customer-${Math.random().toString(36).slice(2)}`);
+
+        if (!storedCustomerKey) {
+          localStorage.setItem("tossCustomerKey", customerKey);
+        }
 
         const paymentWidget = await loadPaymentWidget(clientKey, customerKey);
         paymentWidgetRef.current = paymentWidget;
