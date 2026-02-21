@@ -32,7 +32,7 @@ export default function LoginPage() {
           {/* 추가 안내 */}
           <div className="text-center text-xs text-gray-500 mt-6">
             <p>
-              로그인 시 RAIL-O의 이용약관 및 개인정보처리방침에 동의하게 됩니다.
+              로그인 시 RAILLO의 이용약관 및 개인정보처리방침에 동의하게 됩니다.
             </p>
           </div>
         </CardContent>

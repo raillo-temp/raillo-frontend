@@ -146,7 +146,7 @@ export default function ContactChangePage() {
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <Train className="h-16 w-16 mx-auto mb-2 text-white" />
-                  <h2 className="text-xl font-bold">RAIL-O</h2>
+                  <h2 className="text-xl font-bold">RAILLO</h2>
                   <p className="text-blue-100">마이페이지</p>
                 </div>
               </CardContent>
@@ -175,7 +175,7 @@ export default function ContactChangePage() {
                     className="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors"
                   >
                     <User className="h-5 w-5 text-gray-600" />
-                    <span>마이 RAIL-O</span>
+                    <span>마이 RAILLO</span>
                   </Link>
 
                   {/* 승차권 정보 */}

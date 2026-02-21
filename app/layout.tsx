@@ -6,7 +6,7 @@ import { QueryProvider } from '@/components/providers/QueryProvider'
 
 export const metadata: Metadata = {
   title: 'Raillo',
-  description: 'GOORM DEEPDIVE Raillo Project',
+  description: 'Raillo Project',
   generator: 'v0.dev',
 }
 

@@ -196,7 +196,7 @@ export default function SignupPage() {
           <Card className="bg-white shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-gray-900">회원가입</CardTitle>
-              <CardDescription className="text-gray-600">RAIL-O 회원이 되어 더 많은 혜택을 누리세요</CardDescription>
+              <CardDescription className="text-gray-600">RAILLO 회원이 되어 더 많은 혜택을 누리세요</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* 성명 */}
@@ -471,7 +471,7 @@ export default function SignupPage() {
               {/* 추가 링크 */}
               <div className="text-center pt-4">
                 <p className="text-sm text-gray-600">
-                  이미 RAIL-O 회원이신가요?{" "}
+                  이미 RAILLO 회원이신가요?{" "}
                   <Link href="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
                     로그인하기
                   </Link>

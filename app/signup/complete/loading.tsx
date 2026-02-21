@@ -11,7 +11,7 @@ export default function SignupCompleteLoading() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Train className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-600">RAIL-O</h1>
+              <h1 className="text-2xl font-bold text-blue-600">RAILLO</h1>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
               <Skeleton className="h-4 w-12" />

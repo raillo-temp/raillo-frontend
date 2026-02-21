@@ -83,12 +83,12 @@ export default function FindAccountResultPage() {
               {/* Success Message */}
               <div className="mb-8">
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">회원번호 찾기 완료</h1>
-                <p className="text-gray-600">회원님의 RAIL-O 회원번호를 찾았습니다.</p>
+                <p className="text-gray-600">회원님의 RAILLO 회원번호를 찾았습니다.</p>
               </div>
 
               {/* Member Number */}
               <div className="mb-8 p-6 bg-gray-50 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">RAIL-O 회원번호</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-3">RAILLO 회원번호</h3>
                 <div className="text-2xl font-bold text-blue-600 font-mono">{memberNo}</div>
               </div>
 

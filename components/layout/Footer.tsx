@@ -31,14 +31,14 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold mb-4">RAIL-O 소개</h3>
+            <h3 className="font-semibold mb-4">RAILLO 소개</h3>
             <p className="text-sm text-gray-300">
               한국철도공사는 국민의 안전하고 편리한 철도여행을 위해 최선을 다하고 있습니다.
             </p>
           </div>
         </div>
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>GOORM DEEPDIVE Raillo Project</p>
+          <p>Raillo Project</p>
         </div>
       </div>
     </footer>

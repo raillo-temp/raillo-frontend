@@ -145,7 +145,7 @@ export default function GuestTicketSearchPage() {
           {/* Benefits Section */}
           <Card className="bg-gray-50 border-gray-200">
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-gray-900">RAIL-O 회원에게만 제공되는 특별한 혜택</CardTitle>
+              <CardTitle className="text-lg font-bold text-gray-900">RAILLO 회원에게만 제공되는 특별한 혜택</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-gray-700">

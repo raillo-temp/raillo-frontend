@@ -76,7 +76,7 @@ export default function SignupCompletePage() {
           {/* Page Title */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">회원가입 완료</h1>
-            <p className="text-gray-600">RAIL-O 멤버십에 가입해주셔서 감사합니다</p>
+            <p className="text-gray-600">RAILLO 멤버십에 가입해주셔서 감사합니다</p>
           </div>
 
           <Card className="bg-white shadow-lg border-0">
@@ -90,8 +90,8 @@ export default function SignupCompletePage() {
 
               {/* Success Message */}
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">🎉 RAIL-O 회원가입이 완료되었습니다!</h2>
-                <p className="text-gray-600 text-lg">회원님의 RAIL-O 멤버십 회원번호가 발급되었습니다.</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">🎉 RAILLO 회원가입이 완료되었습니다!</h2>
+                <p className="text-gray-600 text-lg">회원님의 RAILLO 멤버십 회원번호가 발급되었습니다.</p>
               </div>
 
               {/* Divider */}
@@ -99,7 +99,7 @@ export default function SignupCompletePage() {
 
               {/* Member Number */}
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">RAIL-O 멤버십 회원번호</h3>
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">RAILLO 멤버십 회원번호</h3>
                 <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6">
                   <p className="text-3xl font-bold text-red-600">{memberNo}</p>
                 </div>

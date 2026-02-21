@@ -148,7 +148,7 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              RAIL-O와 함께하는 스마트한 기차여행을 시작하세요
+              RAILLO와 함께하는 스마트한 기차여행을 시작하세요
             </p>
           </div>
 
@@ -242,7 +242,7 @@ export default function HomePage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">주요 서비스</h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                RAIL-O에서 제공하는 다양한 서비스를 이용해보세요
+                RAILLO에서 제공하는 다양한 서비스를 이용해보세요
               </p>
             </div>
 
