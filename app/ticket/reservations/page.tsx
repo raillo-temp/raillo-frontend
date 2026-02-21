@@ -7,10 +7,10 @@ import { useAuth } from '@/hooks/use-auth'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Clock, ArrowRight, X, AlertTriangle, Info, CreditCard, ShoppingCart } from "lucide-react"
+import { MapPin, Clock, ArrowRight, X, AlertTriangle, Info, CreditCard } from "lucide-react"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
-import { getReservationList, deleteReservation, addToCart, ReservationDetailResponse } from '@/lib/api/booking'
+import { getReservationList, deleteReservation, PendingBookingCartItem } from '@/lib/api/booking'
 import { handleError } from '@/lib/utils/errorHandler'
 import {
   AlertDialog,
@@ -29,11 +29,10 @@ export default function ReservationsPage() {
   const router = useRouter()
   const { isAuthenticated, isChecking } = useAuth({ redirectPath: '/ticket/reservations' })
   const [showCancelDialog, setShowCancelDialog] = useState(false)
-  const [selectedReservation, setSelectedReservation] = useState<number | null>(null)
-  const [reservations, setReservations] = useState<ReservationDetailResponse[]>([])
+  const [selectedReservation, setSelectedReservation] = useState<string | null>(null)
+  const [reservations, setReservations] = useState<PendingBookingCartItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [cartLoading, setCartLoading] = useState<{ [key: number]: boolean }>({})
 
   // 예약 목록 조회
   useEffect(() => {
@@ -76,20 +75,21 @@ export default function ReservationsPage() {
     }
   }
 
-  const formatPrice = (price: number) => {
-    return 1000 + "원"
+  const formatPrice = (price: number = 0) => {
+    return `${price.toLocaleString()}원`
   }
 
-  const getTotalPrice = (reservation: ReservationDetailResponse) => {
-    return reservation.fare
+  const getTotalPrice = (reservation: PendingBookingCartItem) => {
+    return reservation.totalFare ?? reservation.fare ?? 0
   }
 
-  const getSeatSummary = (seats: ReservationDetailResponse['seats']) => {
+  const getSeatSummary = (seats: PendingBookingCartItem['seats']) => {
     const seatType = seats[0]?.carType === "FIRST_CLASS" ? "특실" : "일반실"
     return `${seatType} ${seats.length}매`
   }
 
-  const isExpired = (expiresAt: string) => {
+  const isExpired = (expiresAt?: string) => {
+    if (!expiresAt) return false
     return new Date(expiresAt) <= new Date()
   }
 
@@ -102,8 +102,8 @@ export default function ReservationsPage() {
     return timeString.substring(0, 5) // "HH:mm" 형식으로 변환
   }
 
-  const handleCancelReservation = (reservationId: number) => {
-    setSelectedReservation(reservationId)
+  const handleCancelReservation = (pendingBookingId: string) => {
+    setSelectedReservation(pendingBookingId)
     setShowCancelDialog(true)
   }
 
@@ -125,36 +125,14 @@ export default function ReservationsPage() {
     setSelectedReservation(null)
   }
 
-  const handlePayment = (reservationId: number) => {
-    // 예약 ID를 세션 스토리지에 저장하고 결제 페이지로 이동
-    sessionStorage.setItem('tempReservationId', 1234)
-    router.push("/ticket/payment")
-  }
-
-  const handleAddToCart = async (reservationId: number) => {
-    try {
-      // 특정 예약의 로딩 상태 설정
-      setCartLoading(prev => ({ ...prev, [reservationId]: true }))
-
-      await addToCart({ reservationId })
-
-      const goToCart = confirm("장바구니에 추가되었습니다.\n장바구니로 이동하시겠습니까?")
-      if (goToCart) {
-        router.push("/cart")
-        return
-      }
-
-      // 예약 목록 다시 조회하여 상태 업데이트
-      const response = await getReservationList()
-      if (response.result) {
-        setReservations(response.result)
-      }
-    } catch (err) {
-      handleError(err, '장바구니 추가 중 오류가 발생했습니다.', true)
-    } finally {
-      // 로딩 상태 해제
-      setCartLoading(prev => ({ ...prev, [reservationId]: false }))
+  const handlePayment = (reservation: PendingBookingCartItem) => {
+    if (typeof reservation.reservationId !== "number") {
+      alert("결제 가능한 예약 정보가 없습니다.")
+      return
     }
+
+    sessionStorage.setItem('tempReservationId', reservation.reservationId.toString())
+    router.push("/ticket/payment")
   }
 
   // 로그인 상태 확인 중이거나 인증되지 않은 경우 로딩 표시
@@ -203,12 +181,7 @@ export default function ReservationsPage() {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">예약승차권 조회</h2>
                 <p className="text-gray-600">예약한 승차권을 확인하고 결제하거나 취소할 수 있습니다</p>
               </div>
-              <Link href="/cart">
-                <Button variant="outline" size="sm" className="text-green-600 border-green-600 hover:bg-green-50">
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  장바구니
-                </Button>
-              </Link>
+              <div></div>
             </div>
           </div>
 
@@ -261,7 +234,7 @@ export default function ReservationsPage() {
 
               return validReservations.map((reservation) => (
                 <Card
-                  key={reservation.reservationId}
+                  key={reservation.pendingBookingId}
                   className="border-blue-200"
                 >
                   <CardContent className="p-6">
@@ -275,7 +248,7 @@ export default function ReservationsPage() {
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-bold text-blue-600">{formatPrice(getTotalPrice(reservation))}</div>
-                        <div className="text-xs text-gray-500">예약번호: {reservation.reservationCode}</div>
+                        <div className="text-xs text-gray-500">예약번호: {reservation.pendingBookingId}</div>
                       </div>
                     </div>
 
@@ -326,34 +299,15 @@ export default function ReservationsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleCancelReservation(reservation.reservationId)}
+                        onClick={() => handleCancelReservation(reservation.pendingBookingId)}
                         className="text-red-600 border-red-600 hover:bg-red-50"
                       >
                         <X className="h-4 w-4 mr-1" />
                         예약취소
                       </Button>
                       <Button
-                        variant="outline"
                         size="sm"
-                        onClick={() => handleAddToCart(reservation.reservationId)}
-                        disabled={cartLoading[reservation.reservationId]}
-                        className="text-green-600 border-green-600 hover:bg-green-50"
-                      >
-                        {cartLoading[reservation.reservationId] ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-1"></div>
-                            추가중...
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingCart className="h-4 w-4 mr-1" />
-                            장바구니
-                          </>
-                        )}
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => handlePayment(reservation.reservationId)}
+                        onClick={() => handlePayment(reservation)}
                         className="bg-blue-600 hover:bg-blue-700"
                       >
                         <CreditCard className="h-4 w-4 mr-1" />

@@ -13,22 +13,21 @@ import { handleError } from '@/lib/utils/errorHandler'
 import { differenceInMinutes, parse } from "date-fns"
 
 interface Ticket {
-  ticketId: number
-  reservationId: number
+  pendingBookingId: string
   operationDate: string
-  departureStationId: number
   departureStationName: string
   departureTime: string
-  arrivalStationId: number
   arrivalStationName: string
   arrivalTime: string
   trainNumber: string
   trainName: string
-  trainCarType: string
-  trainCarNumber: number
-  seatRow: number
-  seatColumn: string
-  seatType: string
+  seats: {
+    seatId: number
+    passengerType: string
+    carNumber: number
+    carType: string
+    seatNumber: string
+  }[]
 }
 
 export default function PurchasedTicketsPage() {
@@ -46,7 +45,7 @@ export default function PurchasedTicketsPage() {
       try {
         setLoading(true)
         const response = await getTickets()
-        setTickets((response as any).result ?? [])
+        setTickets(response.result ?? [])
       } catch (err) {
         const errorMessage = handleError(err, '승차권 목록 조회 중 오류가 발생했습니다.', false)
         setError(errorMessage)
@@ -94,13 +93,6 @@ export default function PurchasedTicketsPage() {
   const formatTime = (timeString: string) => {
     return timeString.substring(0, 5) // "HH:mm" 형식으로 변환
   }
-
-  // reservationId로 그룹화
-  const groupedTickets = tickets.reduce<Record<number, Ticket[]>>((acc, ticket) => {
-    if (!acc[ticket.reservationId]) acc[ticket.reservationId] = []
-    acc[ticket.reservationId].push(ticket)
-    return acc
-  }, {})
 
   // 소요 시간 계산 함수
   const getDuration = (departure: string, arrival: string) => {
@@ -201,10 +193,9 @@ export default function PurchasedTicketsPage() {
                   </CardContent>
                 </Card>
               ) : (
-                Object.values(groupedTickets).map((group) => {
-                  const first = group[0]
+                tickets.map((ticket) => {
                   return (
-                    <Card key={first.reservationId} className="border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-white shadow-lg">
+                    <Card key={ticket.pendingBookingId} className="border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-white shadow-lg">
                       <CardContent className="p-6">
                         {/* 승차권 헤더 */}
                         <div className="border-b-2 border-blue-200 pb-4 mb-4">
@@ -215,13 +206,13 @@ export default function PurchasedTicketsPage() {
                               </div>
                               <div>
                                 <div className="flex items-center space-x-2">
-                                  <Badge className={`${getTrainTypeColor(first.trainName)} px-3 py-1 text-sm font-bold`}>
-                                    {first.trainName}
+                                  <Badge className={`${getTrainTypeColor(ticket.trainName)} px-3 py-1 text-sm font-bold`}>
+                                    {ticket.trainName}
                                   </Badge>
-                                  <span className="text-xl font-bold text-gray-900">{first.trainNumber}</span>
+                                  <span className="text-xl font-bold text-gray-900">{ticket.trainNumber}</span>
                                 </div>
                                 <div className="text-sm text-gray-600 mt-1">
-                                  {formatDate(first.operationDate)}
+                                  {formatDate(ticket.operationDate)}
                                 </div>
                               </div>
                             </div>
@@ -241,8 +232,8 @@ export default function PurchasedTicketsPage() {
                             <div className="space-y-3">
                               <div className="flex items-center justify-between">
                                 <div className="text-center flex-1">
-                                  <div className="text-2xl font-bold text-blue-600">{formatTime(first.departureTime)}</div>
-                                  <div className="text-sm text-gray-600 mt-1">{first.departureStationName}</div>
+                                  <div className="text-2xl font-bold text-blue-600">{formatTime(ticket.departureTime)}</div>
+                                  <div className="text-sm text-gray-600 mt-1">{ticket.departureStationName}</div>
                                 </div>
                                 <div className="flex items-center mx-4">
                                   <div className="w-16 h-0.5 bg-blue-300"></div>
@@ -250,48 +241,50 @@ export default function PurchasedTicketsPage() {
                                   <div className="w-16 h-0.5 bg-blue-300"></div>
                                 </div>
                                 <div className="text-center flex-1">
-                                  <div className="text-2xl font-bold text-blue-600">{formatTime(first.arrivalTime)}</div>
-                                  <div className="text-sm text-gray-600 mt-1">{first.arrivalStationName}</div>
+                                  <div className="text-2xl font-bold text-blue-600">{formatTime(ticket.arrivalTime)}</div>
+                                  <div className="text-sm text-gray-600 mt-1">{ticket.arrivalStationName}</div>
                                 </div>
                               </div>
                               <div className="text-center">
                                 <span className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
-                                  소요시간 {getDuration(first.departureTime, first.arrivalTime)}
+                                  소요시간 {getDuration(ticket.departureTime, ticket.arrivalTime)}
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                                                     {/* 좌석 정보 */}
-                           <div className="bg-white rounded-lg p-4 border border-gray-200">
-                             <h4 className="font-bold text-gray-900 mb-3 flex items-center">
-                               <User className="h-4 w-4 mr-2 text-green-600" />
-                               좌석 정보
-                             </h4>
-                             <div className="space-y-2">
-                               {(() => {
-                                 // 호차별로 좌석 그룹화
-                                 const seatsByCar = group.reduce<Record<number, string[]>>((acc, ticket) => {
-                                   if (!acc[ticket.trainCarNumber]) acc[ticket.trainCarNumber] = []
-                                   acc[ticket.trainCarNumber].push(`${ticket.seatRow}${ticket.seatColumn}`)
-                                   return acc
-                                 }, {})
+                          {/* 좌석 정보 */}
+                          <div className="bg-white rounded-lg p-4 border border-gray-200">
+                            <h4 className="font-bold text-gray-900 mb-3 flex items-center">
+                              <User className="h-4 w-4 mr-2 text-green-600" />
+                              좌석 정보
+                            </h4>
+                            <div className="space-y-2">
+                              {(() => {
+                                // 호차별로 좌석 그룹화
+                                const seatsByCar = ticket.seats.reduce<Record<number, { carType: string; seats: string[] }>>((acc, seat) => {
+                                  if (!acc[seat.carNumber]) {
+                                    acc[seat.carNumber] = { carType: seat.carType, seats: [] }
+                                  }
+                                  acc[seat.carNumber].seats.push(seat.seatNumber)
+                                  return acc
+                                }, {})
 
-                                 return Object.entries(seatsByCar).map(([carNumber, seats]) => (
-                                   <div key={carNumber} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                     <div className="flex items-center space-x-2">
-                                       <Badge variant="outline" className="text-xs">
-                                         {getCarTypeName(group[0].trainCarType)}
-                                       </Badge>
-                                       <span className="font-medium text-gray-900">
-                                         {carNumber}호차({seats.join(', ')})
-                                       </span>
-                                     </div>
-                                   </div>
-                                 ))
-                               })()}
-                             </div>
-                           </div>
+                                return Object.entries(seatsByCar).map(([carNumber, value]) => (
+                                  <div key={carNumber} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                    <div className="flex items-center space-x-2">
+                                      <Badge variant="outline" className="text-xs">
+                                        {getCarTypeName(value.carType)}
+                                      </Badge>
+                                      <span className="font-medium text-gray-900">
+                                        {carNumber}호차({value.seats.join(', ')})
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))
+                              })()}
+                            </div>
+                          </div>
                         </div>
 
                         {/* 승차권 하단 정보 */}

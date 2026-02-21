@@ -38,15 +38,14 @@ import {
   MapPin,
   Clock,
 } from "lucide-react"
-import { getCart, deleteReservation } from '@/lib/api/booking'
+import { getCart, deletePendingBookings } from '@/lib/api/booking'
 import { processPaymentViaCard, processPaymentViaBankAccount } from '@/lib/api/payment'
 import { handleError } from '@/lib/utils/errorHandler'
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 
 interface CartItem {
-  reservationId: number
-  reservationCode: string
+  pendingBookingId: string
   trainNumber: string
   trainName: string
   departureStationName: string
@@ -54,10 +53,13 @@ interface CartItem {
   departureTime: string
   arrivalTime: string
   operationDate: string
-  expiresAt: string
-  fare: number
+  totalFare: number
+  expiresAt?: string
+  fare?: number
+  reservationId?: number
+  reservationCode?: string
   seats: {
-    seatReservationId: number
+    seatId: number
     passengerType: string
     carNumber: number
     carType: string
@@ -75,7 +77,7 @@ export default function CartPage() {
 
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [itemToDelete, setItemToDelete] = useState<number | null>(null)
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null)
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false)
 
   // 결제 모달 관련 state
@@ -108,8 +110,11 @@ export default function CartPage() {
         const response = await getCart()
         console.log('Cart response:', response)
         if (response.result && Array.isArray(response.result)) {
-          const itemsWithSelection = (response.result as any[]).map((item: any) => ({
+          const itemsWithSelection = response.result.map((item) => ({
             ...item,
+            totalFare: item.totalFare ?? item.fare ?? 0,
+            // 기존 fare 참조 코드와 호환
+            fare: item.totalFare ?? item.fare ?? 0,
             selected: true // 기본적으로 모든 항목 선택
           }))
           setCartItems(itemsWithSelection)
@@ -144,8 +149,8 @@ export default function CartPage() {
     }
   }
 
-  const formatPrice = (price: number) => {
-    return 1000 + "원"
+  const formatPrice = (price: number = 0) => {
+    return `${price.toLocaleString()}원`
   }
 
   const formatDate = (dateString: string) => {
@@ -158,12 +163,12 @@ export default function CartPage() {
   }
 
   const getTotalPrice = (item: CartItem) => {
-    return item.fare
+    return item.totalFare ?? 0
   }
 
-  const toggleItemSelection = (reservationId: number) => {
+  const toggleItemSelection = (pendingBookingId: string) => {
     setCartItems((prev) => prev.map((item) => 
-      item.reservationId === reservationId ? { ...item, selected: !item.selected } : item
+      item.pendingBookingId === pendingBookingId ? { ...item, selected: !item.selected } : item
     ))
   }
 
@@ -172,16 +177,16 @@ export default function CartPage() {
     setCartItems((prev) => prev.map((item) => ({ ...item, selected: !allSelected })))
   }
 
-  const handleDeleteItem = (reservationId: number) => {
-    setItemToDelete(reservationId)
+  const handleDeleteItem = (pendingBookingId: string) => {
+    setItemToDelete(pendingBookingId)
     setShowDeleteDialog(true)
   }
 
   const confirmDeleteItem = async () => {
     if (itemToDelete) {
       try {
-        await deleteReservation(itemToDelete)
-        setCartItems((prev) => prev.filter((item) => item.reservationId !== itemToDelete))
+        await deletePendingBookings([itemToDelete])
+        setCartItems((prev) => prev.filter((item) => item.pendingBookingId !== itemToDelete))
         setItemToDelete(null)
       } catch (e: any) {
         handleError(e, '장바구니에서 삭제 중 오류가 발생했습니다.')
@@ -202,8 +207,8 @@ export default function CartPage() {
   const confirmDeleteSelected = async () => {
     try {
       const selectedItems = cartItems.filter((item) => item.selected)
-      // 선택된 모든 항목을 병렬로 삭제
-      await Promise.all(selectedItems.map(item => deleteReservation(item.reservationId)))
+      const pendingBookingIds = selectedItems.map((item) => item.pendingBookingId)
+      await deletePendingBookings(pendingBookingIds)
       setCartItems((prev) => prev.filter((item) => !item.selected))
       setShowDeleteAllDialog(false)
     } catch (e: any) {
@@ -274,14 +279,25 @@ export default function CartPage() {
     setPaymentLoading(true)
 
     try {
+      const payableItems = selectedItems.filter(
+        (item): item is CartItem & { reservationId: number } =>
+          typeof item.reservationId === "number" &&
+          Number.isFinite(item.totalFare)
+      )
+
+      if (payableItems.length !== selectedItems.length) {
+        alert("선택한 항목 중 결제 정보가 없는 항목이 있어 결제를 진행할 수 없습니다.")
+        return
+      }
+
       // 각 예약에 대해 개별적으로 결제 처리
-      const paymentPromises = selectedItems.map(async (item) => {
+      const paymentPromises = payableItems.map(async (item) => {
         if (paymentMethod === "card") {
           if (!validateCardPayment()) return null
 
           const request = {
             reservationId: item.reservationId,
-            amount: item.fare,
+            amount: item.totalFare,
             cardNumber: cardNumber.replace(/\s/g, ""),
             validThru,
             rrn,
@@ -295,7 +311,7 @@ export default function CartPage() {
 
           const request = {
             reservationId: item.reservationId,
-            amount: item.fare,
+            amount: item.totalFare,
             bankCode,
             accountNumber,
             accountHolderName,
@@ -421,14 +437,13 @@ export default function CartPage() {
 
                 {/* Cart Items List */}
                 {cartItems.map((item) => {
-                  const isExpired = new Date(item.expiresAt) < new Date();
                   return (
-                    <Card key={item.reservationId} className={`${item.selected ? "ring-2 ring-blue-500 bg-blue-50" : ""}`}>
+                    <Card key={item.pendingBookingId} className={`${item.selected ? "ring-2 ring-blue-500 bg-blue-50" : ""}`}>
                     <CardContent className="p-6">
                       <div className="flex items-start space-x-4">
                         <Checkbox
                           checked={item.selected}
-                          onCheckedChange={() => toggleItemSelection(item.reservationId)}
+                          onCheckedChange={() => toggleItemSelection(item.pendingBookingId)}
                           className="mt-1 data-[state=checked]:bg-blue-600"
                         />
 
@@ -444,7 +459,7 @@ export default function CartPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDeleteItem(item.reservationId)}
+                              onClick={() => handleDeleteItem(item.pendingBookingId)}
                               className="text-red-600 hover:text-red-700 hover:bg-red-50"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -475,7 +490,7 @@ export default function CartPage() {
                               <h4 className="font-medium text-gray-900 mb-2">좌석 정보</h4>
                               <div className="text-sm">
                                 <div className="font-medium">
-                                  {item.seats[0].carType === "FIRST_CLASS" ? "특실" : "일반실"}
+                                  {(item.seats[0]?.carType ?? "STANDARD") === "FIRST_CLASS" ? "특실" : "일반실"}
                                 </div>
                                 <div className="text-gray-600">
                                   {item.seats.length}매
@@ -493,7 +508,9 @@ export default function CartPage() {
                           {/* Reservation Number & Expiry */}
                           <div className="mt-4 pt-4 border-t">
                             <div className="flex items-center justify-between">
-                              <div className="text-sm text-gray-500">예약번호: {item.reservationCode}</div>
+                              <div className="text-sm text-gray-500">
+                                예약번호: {item.reservationCode ?? item.pendingBookingId}
+                              </div>
                               <div className="text-right">
                                 <div className="text-sm text-red-600 font-semibold">
                                 </div>
@@ -526,7 +543,7 @@ export default function CartPage() {
                           <p className="text-sm text-gray-500">선택된 항목이 없습니다</p>
                         ) : (
                           selectedItems.map((item) => (
-                            <div key={item.reservationId} className="text-sm">
+                            <div key={item.pendingBookingId} className="text-sm">
                               <div className="flex justify-between">
                                 <span>
                                   {item.trainName} {item.trainNumber}
@@ -652,9 +669,9 @@ export default function CartPage() {
               <h3 className="font-semibold mb-3">결제 항목</h3>
               <div className="space-y-2 max-h-32 overflow-y-auto">
                 {selectedItems.map((item) => (
-                  <div key={item.reservationId} className="flex justify-between text-sm bg-gray-50 p-2 rounded">
+                  <div key={item.pendingBookingId} className="flex justify-between text-sm bg-gray-50 p-2 rounded">
                     <span>{item.trainName} {item.trainNumber} - {item.departureStationName} → {item.arrivalStationName}</span>
-                    <span className="font-medium">{formatPrice(item.fare)}</span>
+                    <span className="font-medium">{formatPrice(getTotalPrice(item))}</span>
                   </div>
                 ))}
               </div>

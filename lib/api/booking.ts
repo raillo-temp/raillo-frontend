@@ -41,27 +41,25 @@ export interface ReservationDetailResponse {
   }[]
 }
 
-// 승차권 조회 응답 타입
+// 대기 예약(승차권 표시용) 조회 응답 타입
 export interface TicketResponse {
   message: string
   result: {
-    ticketId: number
-    reservationId: number
-    seatReservationId: number
-    operationDate: string
-    departureStationId: number
-    departureStationName: string
-    departureTime: string
-    arrivalStationId: number
-    arrivalStationName: string
-    arrivalTime: string
+    pendingBookingId: string
     trainNumber: string
     trainName: string
-    trainCarType: string
-    trainCarNumber: number
-    seatRow: number
-    seatColumn: string
-    seatType: string
+    departureStationName: string
+    arrivalStationName: string
+    departureTime: string
+    arrivalTime: string
+    operationDate: string
+    seats: {
+      seatId: number
+      passengerType: string
+      carNumber: number
+      carType: string
+      seatNumber: string
+    }[]
   }[]
 }
 
@@ -75,10 +73,10 @@ export const getReservationDetail = async (reservationId: number) => {
   return api.get<ReservationDetailResponse>(`/api/v1/booking/reservation/${reservationId}`)
 }
 
-// 예약 취소 함수 (body에 reservationId를 JSON으로 보냄)
-export const deleteReservation = async (reservationId: number) => {
-  return api.delete("/api/v1/booking/reservation", {
-    reservationId
+// 예약 취소 함수 (대기 예약 ID 기반)
+export const deleteReservation = async (pendingBookingId: string) => {
+  return api.delete<DeletePendingBookingsResponse>("/api/v1/pending-bookings", {
+    pendingBookingIds: [pendingBookingId],
   })
 }
 
@@ -93,9 +91,41 @@ export interface AddToCartResponse {
 }
 
 // 장바구니 조회 응답 타입
+export interface PendingBookingCartItem {
+  pendingBookingId: string
+  trainNumber: string
+  trainName: string
+  departureStationName: string
+  arrivalStationName: string
+  departureTime: string
+  arrivalTime: string
+  operationDate: string
+  totalFare?: number | null
+  seats: {
+    seatId: number
+    passengerType: string
+    carNumber: number
+    carType: string
+    seatNumber: string
+  }[]
+  // 백엔드 확장 필드 대응
+  reservationId?: number
+  reservationCode?: string
+  expiresAt?: string
+  fare?: number
+}
+
 export interface CartResponse {
   message: string
-  result: ReservationDetailResponse[]
+  result: PendingBookingCartItem[]
+}
+
+export interface DeletePendingBookingsRequest {
+  pendingBookingIds: string[]
+}
+
+export interface DeletePendingBookingsResponse {
+  message: string
 }
 
 // 장바구니에 예약 추가 함수
@@ -105,12 +135,19 @@ export const addToCart = async (request: AddToCartRequest) => {
 
 // 장바구니 조회 함수
 export const getCart = async () => {
-  return api.get<CartResponse>("/api/v1/pending-bookings")
+  return api.get<CartResponse["result"]>("/api/v1/pending-bookings")
+}
+
+export const deletePendingBookings = async (pendingBookingIds: string[]) => {
+  const request: DeletePendingBookingsRequest = {
+    pendingBookingIds,
+  }
+  return api.delete<DeletePendingBookingsResponse>("/api/v1/pending-bookings", request)
 }
 
 // 예약 목록 조회 함수
 export const getReservationList = async () => {
-  return api.get<ReservationDetailResponse[]>("/api/v1/pending-bookings")
+  return api.get<PendingBookingCartItem[]>("/api/v1/pending-bookings")
 }
 
 // 단일 예약 조회 함수
@@ -120,7 +157,7 @@ export const getReservation = async (reservationId: number) => {
 
 // 승차권 조회 함수
 export const getTickets = async () => {
-  return api.get<TicketResponse>("/api/v1/booking/ticket")
+  return api.get<TicketResponse["result"]>("/api/v1/pending-bookings")
 }
 
  
