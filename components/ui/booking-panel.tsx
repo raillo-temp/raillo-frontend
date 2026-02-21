@@ -30,10 +30,6 @@ interface TrainInfo {
     available: boolean
     price: number
   }
-  standingSeat: {
-    available: boolean
-    price: number
-  }
 }
 
 interface BookingPanelProps {

@@ -49,13 +49,9 @@ interface TrainInfo {
     available: boolean;
     price: number;
   };
-  standingSeat: {
-    available: boolean;
-    price: number;
-  };
 }
 
-type SeatType = "generalSeat" | "reservedSeat" | "standingSeat";
+type SeatType = "generalSeat" | "reservedSeat";
 
 // 예약 정보 타입 정의
 interface ReservationInfo {
@@ -268,10 +264,6 @@ export default function TrainSearchPage() {
               available: train.firstClassSeat?.canReserve === true,
               price: train.firstClassSeat?.fare || 13200,
             },
-            standingSeat: {
-              available: train.standingSeat?.canReserve === true,
-              price: train.standingSeat?.fare || 4200,
-            },
           })
         );
 
@@ -366,10 +358,6 @@ export default function TrainSearchPage() {
             reservedSeat: {
               available: train.firstClassSeat?.canReserve === true,
               price: train.firstClassSeat?.fare || 13200,
-            },
-            standingSeat: {
-              available: train.standingSeat?.canReserve === true,
-              price: train.standingSeat?.fare || 4200,
             },
           })
         );
@@ -622,8 +610,6 @@ export default function TrainSearchPage() {
         return "일반실";
       case "reservedSeat":
         return "특실";
-      case "standingSeat":
-        return "입석";
       default:
         return "";
     }
@@ -716,10 +702,6 @@ export default function TrainSearchPage() {
               available: train.firstClassSeat?.canReserve === true,
               price: train.firstClassSeat?.fare || 13200,
             },
-            standingSeat: {
-              available: train.standing?.canReserve === true,
-              price: train.standing?.fare || 0,
-            },
           })
         );
 
@@ -809,10 +791,6 @@ export default function TrainSearchPage() {
             reservedSeat: {
               available: train.firstClassSeat?.canReserve === true,
               price: train.firstClassSeat?.fare || 13200,
-            },
-            standingSeat: {
-              available: train.standingSeat?.canReserve === true,
-              price: train.standingSeat?.fare || 4200,
             },
           })
         );

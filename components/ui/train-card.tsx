@@ -22,13 +22,9 @@ interface TrainInfo {
     available: boolean
     price: number
   }
-  standingSeat: {
-    available: boolean
-    price: number
-  }
 }
 
-type SeatType = "generalSeat" | "reservedSeat" | "standingSeat"
+type SeatType = "generalSeat" | "reservedSeat"
 
 interface TrainCardProps {
   train: TrainInfo
@@ -83,7 +79,7 @@ export function TrainCard({
 
           {/* Seat Options */}
           <div className="lg:col-span-5">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-[340px] sm:ml-auto">
               {/* 일반실 */}
               <div className="border rounded-lg p-3">
                 <div className="text-sm font-medium mb-1">일반실</div>
@@ -116,22 +112,6 @@ export function TrainCard({
                 </Button>
               </div>
 
-              {/* 입석 */}
-              <div className="border rounded-lg p-3">
-                <div className="text-sm font-medium mb-1">입석</div>
-                <div className="text-lg font-bold text-blue-600 mb-2">
-                  {train.standingSeat.available ? formatPrice(train.standingSeat.price) : "-"}
-                </div>
-                <Button
-                  size="sm"
-                  className="w-full"
-                  variant="outline"
-                  disabled={!train.standingSeat.available}
-                  onClick={() => onSeatSelection(train, "standingSeat")}
-                >
-                  {train.standingSeat.available ? "선택" : "없음"}
-                </Button>
-              </div>
             </div>
           </div>
         </div>

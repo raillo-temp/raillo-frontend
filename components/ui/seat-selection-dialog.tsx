@@ -87,7 +87,7 @@ export function SeatSelectionDialog({
         } else if (selectedSeatType === "generalSeat") {
           return car.carType === "STANDARD"
         }
-        return true // 입석은 모든 객차
+        return true
       })
       
       console.log('🔍 suitableCar 찾기 결과:', { suitableCar: suitableCar?.carNumber, suitableCarType: suitableCar?.carType })
@@ -158,7 +158,7 @@ export function SeatSelectionDialog({
       } else if (selectedSeatType === "generalSeat") {
         return car.carType === "STANDARD"
       }
-      return true // 입석은 모든 객차
+      return true
     })
   }
 
@@ -570,4 +570,3 @@ export function SeatSelectionDialog({
     </div>
   )
 } 
-

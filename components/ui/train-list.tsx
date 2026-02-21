@@ -23,13 +23,9 @@ interface TrainInfo {
     available: boolean
     price: number
   }
-  standingSeat: {
-    available: boolean
-    price: number
-  }
 }
 
-type SeatType = "generalSeat" | "reservedSeat" | "standingSeat"
+type SeatType = "generalSeat" | "reservedSeat"
 
 interface TrainListProps {
   displayedTrains: TrainInfo[]
