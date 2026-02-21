@@ -146,7 +146,6 @@ export default function ReservationPage() {
     try {
       // 결제 준비 API 호출 - 대기 예약 ID 목록과 함께 전송
       const response = await preparePayment({
-        message: "결제 준비 요청",
         pendingBookingIds: [selectedBooking.pendingBookingId],
       });
       
