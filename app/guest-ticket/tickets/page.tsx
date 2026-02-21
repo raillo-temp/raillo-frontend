@@ -7,8 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Train, MapPin, Clock, Calendar, User, ArrowRight, ChevronLeft, Download, Printer, Home, QrCode } from "lucide-react"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 
 export default function GuestTicketsPage() {
   // 예시 승차권 데이터
@@ -84,9 +82,6 @@ export default function GuestTicketsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <Header />
-
       {/* Breadcrumb */}
       <div className="bg-white border-b py-3">
         <div className="container mx-auto px-4 flex items-center justify-between">
@@ -242,9 +237,6 @@ export default function GuestTicketsPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   )
 }

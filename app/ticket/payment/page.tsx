@@ -16,8 +16,6 @@ import {
   User,
   Loader2
 } from "lucide-react"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 import { useAuth } from '@/hooks/use-auth'
 import { getReservation, ReservationDetailResponse } from '@/lib/api/booking'
 import { processPaymentViaCard, processPaymentViaBankAccount } from '@/lib/api/payment'
@@ -285,12 +283,10 @@ export default function PaymentPage() {
   if (isChecking) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-        <Header />
         <div className="container mx-auto px-4 py-16 text-center flex-1">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
           <p className="text-gray-600">로그인 상태를 확인하고 있습니다...</p>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -304,12 +300,10 @@ export default function PaymentPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-        <Header />
         <div className="container mx-auto px-4 py-16 text-center flex-1">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
           <p className="text-gray-600">예약 정보를 불러오고 있습니다...</p>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -318,7 +312,6 @@ export default function PaymentPage() {
   if (error || !reservationData) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-        <Header />
         <div className="container mx-auto px-4 py-16 text-center flex-1">
           <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
@@ -331,15 +324,12 @@ export default function PaymentPage() {
             예약 목록으로 이동
           </Button>
         </div>
-        <Footer />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header />
-
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Page Title */}
@@ -686,8 +676,6 @@ export default function PaymentPage() {
           </Card>
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }

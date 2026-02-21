@@ -14,8 +14,6 @@ import { Train, ChevronLeft, Home, ChevronRight, ChevronUp, ChevronDown, Printer
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { cn } from "@/lib/utils"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 
 export default function GuestBookingPage() {
   const router = useRouter()
@@ -106,8 +104,6 @@ export default function GuestBookingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-
       {/* Blue Header Section */}
       <div className="bg-blue-500 text-white py-12">
         <div className="container mx-auto px-4 text-center">
@@ -267,8 +263,6 @@ export default function GuestBookingPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }

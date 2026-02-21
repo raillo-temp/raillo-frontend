@@ -12,8 +12,6 @@ import { Train, Home, Printer, Eye, EyeOff, User, Mail, Lock, Phone } from "luci
 import { signup } from "@/lib/api/signup"
 import { validateSignupForm, formatPhoneNumber, removePhoneNumberFormatting, SignupFormData, Agreements, ValidationErrors } from "@/lib/validation/signup"
 import { handleError } from '@/lib/utils/errorHandler'
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -188,8 +186,6 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header />
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
@@ -481,8 +477,6 @@ export default function SignupPage() {
           </Card>
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }

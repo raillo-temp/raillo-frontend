@@ -6,8 +6,6 @@ import { usePostPaymentConfirm } from "@/hooks/usePayment";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Header from "@/components/layout/Header/Header";
-import Footer from "@/components/layout/Footer";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -100,12 +98,10 @@ export default function PaymentSuccessPage() {
   if (isConfirming) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-        <Header />
         <div className="container mx-auto px-4 py-16 text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
           <p className="text-gray-600">결제를 확인하는 중입니다...</p>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -113,7 +109,6 @@ export default function PaymentSuccessPage() {
   if (isError || !paymentResult) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-        <Header />
         <div className="container mx-auto px-4 py-16 text-center">
           <XCircle className="h-16 w-16 text-red-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">결제 확인 실패</h2>
@@ -124,15 +119,12 @@ export default function PaymentSuccessPage() {
             홈으로 돌아가기
           </Button>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header />
-
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           {/* 성공 메시지 */}
@@ -205,8 +197,6 @@ export default function PaymentSuccessPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

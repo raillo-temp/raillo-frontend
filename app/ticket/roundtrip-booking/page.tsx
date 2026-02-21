@@ -18,8 +18,6 @@ import {
   CreditCard,
   CheckCircle,
 } from "lucide-react"
-import Header from "@/components/layout/Header/Header"
-import Footer from "@/components/layout/Footer"
 
 interface PassengerCounts {
   adult: number
@@ -159,19 +157,15 @@ export default function RoundtripBookingPage() {
   if (!bookingData) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">로딩 중...</div>
         </div>
-        <Footer />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header />
-
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Page Title */}
@@ -367,8 +361,6 @@ export default function RoundtripBookingPage() {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   )
-} 
+}
