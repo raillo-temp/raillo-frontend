@@ -41,7 +41,6 @@ const Breadcrumb = () => {
       contact: "연락처",
       change: "변경",
       password: "비밀번호",
-      landmarks: "랜드마크 찾기",
     };
 
     let currentPath = "";

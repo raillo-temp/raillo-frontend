@@ -1,4 +1,3 @@
-import SidebarAdditionalService from "./SidebarAdditionalService";
 import SidebarTicketService from "./SidebarTicketService";
 
 const SidebarContent = ({ close }: { close: () => void }) => {
@@ -7,8 +6,6 @@ const SidebarContent = ({ close }: { close: () => void }) => {
       <nav className="space-y-3">
         {/* 승차권 서비스 */}
         <SidebarTicketService close={close} />
-        {/* 부가 서비스 섹션 */}
-        <SidebarAdditionalService close={close} />
         {/* 비회원 서비스 섹션
             <div className="space-y-1 mt-6">
               <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-3">
