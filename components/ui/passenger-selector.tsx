@@ -105,7 +105,7 @@ export function PassengerSelector({ value, onValueChange, placeholder, label, si
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md p-0 max-h-[85vh] overflow-hidden [&>button]:hidden">
+        <DialogContent className="sm:max-w-md p-0 max-h-[90dvh] overflow-hidden [&>button]:hidden flex flex-col">
           <div className="p-4 border-b">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold flex items-center justify-between">
@@ -123,7 +123,7 @@ export function PassengerSelector({ value, onValueChange, placeholder, label, si
             </DialogHeader>
           </div>
 
-          <div className="p-4">
+          <div className="p-4 overflow-y-auto flex-1 min-h-0">
             <div className="space-y-3">
               {typesToShow.map((passengerType) => (
                 <div key={passengerType.key} className="flex items-center justify-between p-3 border rounded-lg">
@@ -161,7 +161,7 @@ export function PassengerSelector({ value, onValueChange, placeholder, label, si
             </div>
           </div>
 
-          <div className="flex border-t p-4">
+          <div className="flex border-t p-4 bg-white shrink-0">
             <Button variant="outline" onClick={handleClose} className="flex-1 mr-2">
               취소
             </Button>
