@@ -1,8 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+import { api } from "@/lib/api";
 
 // 대기 예약 요청 타입
 export interface PendingBookingRequest {
@@ -52,21 +49,15 @@ export const usePostPendingBooking = () => {
     mutationFn: async (
       params: PendingBookingRequest
     ): Promise<PendingBookingResponse> => {
-      try {
-        const { data } = await axios.post<PendingBookingResponse>(
-          `${API_BASE_URL}/api/v1/pending-bookings`,
-          params
-        );
-        return data;
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.data) {
-          const message =
-            (error.response.data as { message?: string }).message ||
-            "대기 예약 생성에 실패했습니다.";
-          throw new Error(message);
-        }
-        throw error;
-      }
+      const response = await api.post<PendingBookingResponse["result"]>(
+        "/api/v1/pending-bookings",
+        params
+      );
+
+      return {
+        message: response.message ?? "대기 예약이 생성되었습니다.",
+        result: response.result,
+      };
     },
   });
 };
@@ -75,19 +66,13 @@ export const useGetPendingBookingList = () => {
   return useQuery<PendingBookingListResponse, Error>({
     queryKey: ["pendingBookings"],
     queryFn: async (): Promise<PendingBookingListResponse> => {
-      try {
-        const { data } = await axios.get<PendingBookingListResponse>(
-          `${API_BASE_URL}/api/v1/pending-bookings`
-        );
-        return data;
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.data) {
-          const message =
-            (error.response.data as { message?: string }).message ||
-            "대기 예약 목록 조회에 실패했습니다.";
-          throw new Error(message);
-        }
-        throw error;
+      const response = await api.get<PendingBookingInfo[]>(
+        "/api/v1/pending-bookings"
+      );
+
+      return {
+        message: response.message ?? "대기 예약 목록 조회에 성공했습니다.",
+        result: response.result ?? [],
       }
     },
   });

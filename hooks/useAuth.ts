@@ -10,22 +10,29 @@ import {
   VerifyEmailCodeRequest,
   VerifyEmailCodeResponse,
 } from "@/types/authType";
+import { api } from "@/lib/api";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+function requireResult<T>(result: T | undefined, fallbackMessage: string): T {
+  if (result === undefined || result === null) {
+    throw new Error(fallbackMessage);
+  }
+  return result;
+}
 
 // ========== 회원가입 ==========
 
 export const usePostSignup = () => {
   return useMutation<SignupResponse, Error, SignupRequest>({
     mutationFn: async (payload: SignupRequest): Promise<SignupResponse> => {
-      const { data } = await axios.post<SignupResponse>(
-        `${API_BASE_URL}/auth/signup`,
+      const response = await api.post<SignupResponse["result"]>(
+        "/auth/signup",
         payload
       );
-      return data;
+      return {
+        message: response.message ?? "회원가입에 성공했습니다.",
+        result: requireResult(response.result, "회원가입 결과가 비어 있습니다."),
+      };
     },
   });
 };
@@ -35,10 +42,13 @@ export const usePostSignup = () => {
 export const usePostAuthMemberSendEmailCode = () => {
   return useMutation<AuthMemberSendEmailCodeResponse, Error, void>({
     mutationFn: async (): Promise<AuthMemberSendEmailCodeResponse> => {
-      const { data } = await axios.post<AuthMemberSendEmailCodeResponse>(
-        `${API_BASE_URL}/auth/members/emails`
+      const response = await api.post<AuthMemberSendEmailCodeResponse["result"]>(
+        "/auth/members/emails"
       );
-      return data;
+      return {
+        message: response.message ?? "인증코드가 발송되었습니다.",
+        result: requireResult(response.result, "인증코드 발송 결과가 비어 있습니다."),
+      };
     },
   });
 };
@@ -48,10 +58,11 @@ export const usePostAuthMemberSendEmailCode = () => {
 export const usePostLogout = () => {
   return useMutation<LogoutResponse, Error, void>({
     mutationFn: async (): Promise<LogoutResponse> => {
-      const { data } = await axios.post<LogoutResponse>(
-        `${API_BASE_URL}/auth/logout`
-      );
-      return data;
+      const response = await api.post<LogoutResponse["result"]>("/auth/logout");
+      return {
+        message: response.message ?? "로그아웃되었습니다.",
+        result: response.result ?? {},
+      };
     },
   });
 };
@@ -63,11 +74,14 @@ export const usePostMemberNoLogin = () => {
     mutationFn: async (
       payload: MemberNoLoginRequest
     ): Promise<MemberNoLoginResponse> => {
-      const { data } = await axios.post<MemberNoLoginResponse>(
-        `${API_BASE_URL}/auth/login`,
+      const response = await api.post<MemberNoLoginResponse["result"]>(
+        "/auth/login",
         payload
       );
-      return data;
+      return {
+        message: response.message ?? "로그인에 성공했습니다.",
+        result: requireResult(response.result, "로그인 응답이 비어 있습니다."),
+      };
     },
   });
 };
@@ -79,11 +93,14 @@ export const usePostSendEmailCode = () => {
     mutationFn: async (
       payload: SendEmailCodeRequest
     ): Promise<SendEmailCodeResponse> => {
-      const { data } = await axios.post<SendEmailCodeResponse>(
-        `${API_BASE_URL}/auth/emails`,
+      const response = await api.post<SendEmailCodeResponse["result"]>(
+        "/auth/emails",
         payload
       );
-      return data;
+      return {
+        message: response.message ?? "인증코드가 발송되었습니다.",
+        result: requireResult(response.result, "인증코드 발송 결과가 비어 있습니다."),
+      };
     },
   });
 };
@@ -95,11 +112,14 @@ export const usePostVerifyEmailCode = () => {
     mutationFn: async (
       payload: VerifyEmailCodeRequest
     ): Promise<VerifyEmailCodeResponse> => {
-      const { data } = await axios.post<VerifyEmailCodeResponse>(
-        `${API_BASE_URL}/auth/emails/verify`,
+      const response = await api.post<VerifyEmailCodeResponse["result"]>(
+        "/auth/emails/verify",
         payload
       );
-      return data;
+      return {
+        message: response.message ?? "인증에 성공했습니다.",
+        result: requireResult(response.result, "이메일 인증 결과가 비어 있습니다."),
+      };
     },
   });
 };
