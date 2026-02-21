@@ -41,11 +41,12 @@ export interface ReservationDetailResponse {
   }[]
 }
 
-// 대기 예약(승차권 표시용) 조회 응답 타입
+// 승차권을 포함한 예매 목록 조회 응답 타입
 export interface TicketResponse {
   message: string
   result: {
-    pendingBookingId: string
+    bookingId: number
+    bookingCode: string
     trainNumber: string
     trainName: string
     departureStationName: string
@@ -53,8 +54,10 @@ export interface TicketResponse {
     departureTime: string
     arrivalTime: string
     operationDate: string
-    seats: {
-      seatId: number
+    tickets: {
+      ticketId: number
+      ticketNumber: string
+      status: string
       passengerType: string
       carNumber: number
       carType: string
@@ -157,7 +160,7 @@ export const getReservation = async (reservationId: number) => {
 
 // 승차권 조회 함수
 export const getTickets = async () => {
-  return api.get<TicketResponse["result"]>("/api/v1/pending-bookings")
+  return api.get<TicketResponse["result"]>("/api/v1/bookings")
 }
 
  

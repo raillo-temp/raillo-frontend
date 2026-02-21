@@ -13,7 +13,8 @@ import { handleError } from '@/lib/utils/errorHandler'
 import { differenceInMinutes, parse } from "date-fns"
 
 interface Ticket {
-  pendingBookingId: string
+  bookingId: number
+  bookingCode: string
   operationDate: string
   departureStationName: string
   departureTime: string
@@ -21,8 +22,10 @@ interface Ticket {
   arrivalTime: string
   trainNumber: string
   trainName: string
-  seats: {
-    seatId: number
+  tickets: {
+    ticketId: number
+    ticketNumber: string
+    status: string
     passengerType: string
     carNumber: number
     carType: string
@@ -195,7 +198,7 @@ export default function PurchasedTicketsPage() {
               ) : (
                 tickets.map((ticket) => {
                   return (
-                    <Card key={ticket.pendingBookingId} className="border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-white shadow-lg">
+                    <Card key={ticket.bookingId} className="border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-white shadow-lg">
                       <CardContent className="p-6">
                         {/* 승차권 헤더 */}
                         <div className="border-b-2 border-blue-200 pb-4 mb-4">
@@ -217,6 +220,7 @@ export default function PurchasedTicketsPage() {
                               </div>
                             </div>
                             <div className="text-right">
+                              <div className="text-xs text-gray-500">예매번호: {ticket.bookingCode}</div>
                             </div>
                           </div>
                         </div>
@@ -262,11 +266,11 @@ export default function PurchasedTicketsPage() {
                             <div className="space-y-2">
                               {(() => {
                                 // 호차별로 좌석 그룹화
-                                const seatsByCar = ticket.seats.reduce<Record<number, { carType: string; seats: string[] }>>((acc, seat) => {
-                                  if (!acc[seat.carNumber]) {
-                                    acc[seat.carNumber] = { carType: seat.carType, seats: [] }
+                                const seatsByCar = ticket.tickets.reduce<Record<number, { carType: string; seats: string[] }>>((acc, item) => {
+                                  if (!acc[item.carNumber]) {
+                                    acc[item.carNumber] = { carType: item.carType, seats: [] }
                                   }
-                                  acc[seat.carNumber].seats.push(seat.seatNumber)
+                                  acc[item.carNumber].seats.push(item.seatNumber)
                                   return acc
                                 }, {})
 

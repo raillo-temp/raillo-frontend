@@ -180,7 +180,20 @@ export default function ReservationPage() {
         successUrl: `${window.location.origin}/ticket/reservation/success`,
         failUrl: `${window.location.origin}/ticket/reservation/fail`,
       });
-    } catch (error) {
+    } catch (error: any) {
+      const errorCode = String(error?.code ?? "");
+      const errorMessage = String(error?.message ?? "");
+      const isUserCancel =
+        errorCode === "USER_CANCEL" ||
+        errorCode.includes("CANCEL") ||
+        errorMessage.includes("취소");
+
+      // 사용자가 결제창에서 취소한 경우는 오류로 취급하지 않음
+      if (isUserCancel) {
+        setShowPaymentWidget(false);
+        return;
+      }
+
       console.error("결제 요청 실패:", error);
       alert("결제 요청 중 오류가 발생했습니다.");
     }
